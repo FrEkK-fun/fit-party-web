@@ -1,0 +1,138 @@
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
+
+const PlayersDetails = ({ player }) => {
+	// Function to select the appropriate icon based on the player's class
+	const getPlayerClassIcon = (playerClass) => {
+		switch (playerClass) {
+			case "Fighter":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["hand-fist"]}
+						className="class-icon"
+					/>
+				);
+			case "Defender":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["shield"]}
+						className="class-icon"
+					/>
+				);
+			case "Explorer":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["binoculars"]}
+						className="class-icon"
+					/>
+				);
+			default:
+				return null; // Return null or a default icon if class doesn't match
+		}
+	};
+
+	// Function to select the appropriate icon based on the player's team
+	const getPlayerTeamIcon = (teamName) => {
+		switch (teamName) {
+			case "Blue":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["flag"]}
+						className="team-color-blue"
+					/>
+				);
+			case "Red":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["flag"]}
+						className="team-color-red"
+					/>
+				);
+			case "Yellow":
+				return (
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["flag"]}
+						className="team-color-yellow"
+					/>
+				);
+			default:
+				return null; // Return null or a default icon if team doesn't match
+		}
+	};
+
+	// Render player's weekly goal
+	function renderPlayerGoal(player) {
+		const currentGoal = player.weekly.goal.description;
+		const goalDone = player.weekly.goal.done;
+		if (!currentGoal) {
+			return (
+				<p>
+					<span>
+						<FontAwesomeIcon
+							icon={byPrefixAndName.fas["circle-exclamation"]}
+							className="goalNotSet"
+						/>
+					</span>{" "}
+					No goal set for this week.
+				</p>
+			);
+		} else if (currentGoal && !goalDone) {
+			return (
+				<p>
+					<span>
+						<FontAwesomeIcon
+							icon={byPrefixAndName.fas["person-running"]}
+							className="goalSet"
+						/>
+					</span>{" "}
+					{currentGoal}
+				</p>
+			);
+		} else if (goalDone) {
+			return (
+				<p>
+					<span>
+						<FontAwesomeIcon
+							icon={byPrefixAndName.fas["circle-check"]}
+							className="goalDone"
+						/>
+					</span>{" "}
+					{currentGoal} <span className="italic">(Completed!)</span>
+				</p>
+			);
+		}
+	}
+
+	return (
+		<div className="players-details">
+			<Link to={`/players/${player._id}`}>
+				<h3 className="margin--bottom">
+					{player.name}{" "}
+					<span className="span-players-info">
+						{player.properties.xp} xp / level {player.properties.level}
+					</span>
+				</h3>
+				<p className="flex">
+					{getPlayerTeamIcon(player.team.teamName)}
+					Team: {player.team.teamName}{" "}
+					{player.team.isTeamLeader && "(Team Leader)"}
+				</p>
+				<p className="flex">
+					{getPlayerClassIcon(player.properties.class)} Class:{" "}
+					{player.properties.class}
+				</p>
+				<p className="flex">
+					<FontAwesomeIcon
+						icon={byPrefixAndName.fas["weight-hanging"]}
+						className="class-icon"
+					/>{" "}
+					{player.sessions.length} sessions total
+				</p>
+				<div className="margin--top">{renderPlayerGoal(player)}</div>
+			</Link>
+		</div>
+	);
+};
+
+export default PlayersDetails;
