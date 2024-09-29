@@ -38,8 +38,6 @@ const Home = () => {
 		return <CreatePlayerForm />;
 	}
 
-	console.log(backendURL);
-
 	// If the user is logged in and has players, show the home content
 	return (
 		<main>
