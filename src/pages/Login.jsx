@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { Link } from "react-router-dom";
 
+import backendURL from "../config";
+
 const Login = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -12,6 +14,8 @@ const Login = () => {
 
 		await login(email, password);
 	};
+
+	console.log(backendURL);
 
 	return (
 		<main>
