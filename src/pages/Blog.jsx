@@ -57,10 +57,19 @@ const Blog = () => {
 		dispatch({ type: "ADD_BLOG", payload: newBlog });
 	};
 
+	const handleEditComplete = (updatedBlog) => {
+		setEditingBlog(null);
+		dispatch({ type: "UPDATE_BLOG", payload: updatedBlog });
+	};
+
 	return (
 		<main>
 			<h2>Blog</h2>
 			{user.isAdmin && <CreateBlogForm addBlog={addBlog} />}
+
+			{editingBlog && (
+				<EditBlogForm blog={editingBlog} onEdit={handleEditComplete} />
+			)}
 
 			{blogs &&
 				blogs
@@ -96,6 +105,15 @@ const Blog = () => {
 
 							{expandedBlogId === blog._id && (
 								<>
+									<p>
+										<i>
+											{new Date(blog.updatedAt).toLocaleString("en-US", {
+												year: "numeric",
+												month: "long",
+												day: "numeric",
+											})}
+										</i>
+									</p>
 									<ReactMarkdown className={"blogBody"}>
 										{blog.body}
 									</ReactMarkdown>
