@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
+import backendURL from "../config";
 
 const CreatePlayerForm = () => {
 	const { dispatch, user } = useAuthContext();
@@ -37,16 +38,13 @@ const CreatePlayerForm = () => {
 			sessions: [],
 		};
 
-		const res = await fetch(
-			`${process.env.REACT_APP_DEV_BACKEND_URL}/api/players`,
-			{
-				method: "POST",
-				body: JSON.stringify(newPlayer),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}
-		);
+		const res = await fetch(`${backendURL}/api/players`, {
+			method: "POST",
+			body: JSON.stringify(newPlayer),
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 		const json = await res.json();
 
 		if (!res.ok) {
@@ -61,7 +59,7 @@ const CreatePlayerForm = () => {
 
 			// Send a request to the backend to update the user's document
 			const updateUserResponse = await fetch(
-				`${process.env.REACT_APP_DEV_BACKEND_URL}/api/user/updateUserPlayers`,
+				`${backendURL}/api/user/updateUserPlayers`,
 				{
 					method: "PATCH",
 					body: JSON.stringify({ playerId: newPlayerId, token: userToken }),

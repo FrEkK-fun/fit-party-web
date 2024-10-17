@@ -6,6 +6,7 @@ import {
 	faCircleCheck,
 	faPersonRunning,
 } from "@fortawesome/free-solid-svg-icons";
+import backendURL from "../config";
 
 const WeeklyGoal = ({ player }) => {
 	const { user } = useAuthContext();
@@ -20,7 +21,7 @@ const WeeklyGoal = ({ player }) => {
 		e.preventDefault();
 
 		const response = await fetch(
-			`${process.env.REACT_APP_DEV_BACKEND_URL}/api/players/${player._id}/goal`,
+			`${backendURL}/api/players/${player._id}/goal`,
 			{
 				method: "PATCH",
 				headers: {
@@ -43,7 +44,7 @@ const WeeklyGoal = ({ player }) => {
 
 	const handleGoalCompletion = async () => {
 		const response = await fetch(
-			`${process.env.REACT_APP_DEV_BACKEND_URL}/api/players/${player._id}/goal`,
+			`${backendURL}/api/players/${player._id}/goal`,
 			{
 				method: "PATCH",
 				headers: {

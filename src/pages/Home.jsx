@@ -12,7 +12,7 @@ const Home = () => {
 	const { user } = useAuthContext();
 
 	const { player, dispatch } = usePlayerContext();
-	const playerId = user.players[0];
+	const playerId = user?.players?.[0];
 
 	useEffect(() => {
 		const fetchPlayer = async () => {
