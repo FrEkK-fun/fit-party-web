@@ -2,65 +2,10 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
 
+import getPlayerClassIcon from "../utils/getPlayerClassIcon";
+import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
+
 const PlayersDetails = ({ player }) => {
-	// Function to select the appropriate icon based on the player's class
-	const getPlayerClassIcon = (playerClass) => {
-		switch (playerClass) {
-			case "Fighter":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["hand-fist"]}
-						className="class-icon"
-					/>
-				);
-			case "Defender":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["shield"]}
-						className="class-icon"
-					/>
-				);
-			case "Explorer":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["binoculars"]}
-						className="class-icon"
-					/>
-				);
-			default:
-				return null; // Return null or a default icon if class doesn't match
-		}
-	};
-
-	// Function to select the appropriate icon based on the player's team
-	const getPlayerTeamIcon = (teamName) => {
-		switch (teamName) {
-			case "Blue":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-blue"
-					/>
-				);
-			case "Red":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-red"
-					/>
-				);
-			case "Yellow":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-yellow"
-					/>
-				);
-			default:
-				return null; // Return null or a default icon if team doesn't match
-		}
-	};
-
 	// Render player's weekly goal
 	function renderPlayerGoal(player) {
 		const currentGoal = player.weekly.goal.description;

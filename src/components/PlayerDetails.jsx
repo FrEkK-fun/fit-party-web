@@ -3,15 +3,16 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import SessionForm from "./SessionForm";
 import WeeklyGoal from "./WeeklyGoal";
 import backendURL from "../config";
+import getWeekNumber from "../utils/getWeekNumber";
+import parseTimestamp from "../utils/parseTimestamp";
+import getPlayerClassIcon from "../utils/getPlayerClassIcon";
+import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
 
-// Moment
-import moment from "moment";
-
 // Date FNS
-import { formatDistanceToNow, format, getWeek, startOfWeek } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 
 const PlayerDetails = ({ player }) => {
 	const { dispatch } = usePlayerContext();
@@ -41,81 +42,6 @@ const PlayerDetails = ({ player }) => {
 			dispatch({ type: "DELETE_SESSION", payload: json });
 		}
 	};
-
-	// Function to select the appropriate icon based on the player's class
-	const getPlayerClassIcon = (playerClass) => {
-		switch (playerClass) {
-			case "Fighter":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["hand-fist"]}
-						className="class-icon"
-					/>
-				);
-			case "Defender":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["shield"]}
-						className="class-icon"
-					/>
-				);
-			case "Explorer":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["binoculars"]}
-						className="class-icon"
-					/>
-				);
-			default:
-				return null; // Return null or a default icon if class doesn't match
-		}
-	};
-
-	// Function to select the appropriate icon based on the player's team
-	const getPlayerTeamIcon = (teamName) => {
-		switch (teamName) {
-			case "Blue":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-blue"
-					/>
-				);
-			case "Red":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-red"
-					/>
-				);
-			case "Yellow":
-				return (
-					<FontAwesomeIcon
-						icon={byPrefixAndName.fas["flag"]}
-						className="team-color-yellow"
-					/>
-				);
-			default:
-				return null; // Return null or a default icon if team doesn't match
-		}
-	};
-
-	// Format timestamps
-	function parseTimestamp(timestamp) {
-		if (Date.parse(timestamp)) {
-			return new Date(timestamp);
-		} else {
-			// Parse the timestamp with the format "DD.MM.YYYY HH.mm.ss"
-			return moment(timestamp, "DD.MM.YYYY HH.mm.ss").toDate();
-		}
-	}
-
-	// Resolve week numbers
-	function getWeekNumber(timestamp) {
-		const date = parseTimestamp(timestamp);
-		const startOfWeekDate = startOfWeek(date, { weekStartsOn: 1 });
-		return getWeek(startOfWeekDate);
-	}
 
 	return (
 		<div className="players-details">
