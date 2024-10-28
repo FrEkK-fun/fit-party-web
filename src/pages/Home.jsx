@@ -7,6 +7,7 @@ import backendURL from "../config";
 
 // Components
 import SessionForm from "../components/SessionForm";
+import WeeklyGoal from "../components/WeeklyGoal";
 
 const Home = () => {
 	const { user } = useAuthContext();
@@ -42,7 +43,15 @@ const Home = () => {
 	return (
 		<main>
 			<h2>Home</h2>
-			<SessionForm />
+			<div>
+				{player && <SessionForm />}
+				{player && player.weekly.goal.description === "" && (
+					<div>
+						<h3>Weekly goal</h3>
+						<WeeklyGoal player={player} />
+					</div>
+				)}
+			</div>
 		</main>
 	);
 };

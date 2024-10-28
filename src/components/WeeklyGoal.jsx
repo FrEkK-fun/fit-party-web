@@ -7,6 +7,7 @@ import {
 	faPersonRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import backendURL from "../config";
+import getWeekday from "../utils/getWeekday";
 
 const WeeklyGoal = ({ player }) => {
 	const { user } = useAuthContext();
@@ -65,6 +66,8 @@ const WeeklyGoal = ({ player }) => {
 		}
 	};
 
+	const today = getWeekday(Date.now());
+
 	if (userHasAuthorization && currentGoal) {
 		return (
 			<div className="goalWrapper">
@@ -85,7 +88,11 @@ const WeeklyGoal = ({ player }) => {
 		);
 	}
 
-	if (userHasAuthorization && !currentGoal) {
+	if (
+		userHasAuthorization &&
+		!currentGoal &&
+		(today === "monday" || today === "tuesday")
+	) {
 		return (
 			<form className="goalInputForm" onSubmit={handleSubmit}>
 				<label>
@@ -98,6 +105,21 @@ const WeeklyGoal = ({ player }) => {
 				</label>
 				<button type="submit">Submit Goal</button>
 			</form>
+		);
+	}
+
+	if (
+		userHasAuthorization &&
+		!currentGoal &&
+		(today !== "monday" || today !== "tuesday")
+	) {
+		return (
+			<p>
+				<span>
+					<FontAwesomeIcon className="goalNotSet" icon={faCircleExclamation} />
+				</span>{" "}
+				No goal set for this week.
+			</p>
 		);
 	}
 
