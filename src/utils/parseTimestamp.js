@@ -1,3 +1,5 @@
+import moment from "moment";
+
 // Format timestamps
 export default function parseTimestamp(timestamp) {
 	if (Date.parse(timestamp)) {
