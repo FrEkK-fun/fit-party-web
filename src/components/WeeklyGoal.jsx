@@ -7,6 +7,7 @@ import {
 	faPersonRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import backendURL from "../config";
+import getWeekday from "../utils/getWeekday";
 
 const WeeklyGoal = ({ player }) => {
 	const { user } = useAuthContext();
@@ -65,8 +66,10 @@ const WeeklyGoal = ({ player }) => {
 		}
 	};
 
-	if (userHasAuthorization) {
-		return currentGoal ? (
+	const today = getWeekday(Date.now());
+
+	if (userHasAuthorization && currentGoal) {
+		return (
 			<div className="goalWrapper">
 				<p>
 					Your goal has been set - it cannot be changed.{" "}
@@ -82,7 +85,15 @@ const WeeklyGoal = ({ player }) => {
 				/>
 				<label htmlFor="goalDone">{currentGoal}</label>
 			</div>
-		) : (
+		);
+	}
+
+	if (
+		userHasAuthorization &&
+		!currentGoal &&
+		(today === "monday" || today === "tuesday")
+	) {
+		return (
 			<form className="goalInputForm" onSubmit={handleSubmit}>
 				<label>
 					<input
@@ -95,38 +106,54 @@ const WeeklyGoal = ({ player }) => {
 				<button type="submit">Submit Goal</button>
 			</form>
 		);
-	} else {
-		if (!currentGoal) {
-			return (
-				<p>
-					<span>
-						<FontAwesomeIcon
-							className="goalNotSet"
-							icon={faCircleExclamation}
-						/>
-					</span>{" "}
-					No goal set for this week.
-				</p>
-			);
-		} else if (currentGoal && !goalDone) {
-			return (
-				<p>
-					<span>
-						<FontAwesomeIcon className="goalSet" icon={faPersonRunning} />
-					</span>{" "}
-					{currentGoal}
-				</p>
-			);
-		} else if (goalDone) {
-			return (
-				<p>
-					<span>
-						<FontAwesomeIcon className="goalDone" icon={faCircleCheck} />
-					</span>{" "}
-					{currentGoal} <span className="italic">(Completed!)</span>
-				</p>
-			);
-		}
+	}
+
+	if (
+		userHasAuthorization &&
+		!currentGoal &&
+		(today !== "monday" || today !== "tuesday")
+	) {
+		return (
+			<p>
+				<span>
+					<FontAwesomeIcon className="goalNotSet" icon={faCircleExclamation} />
+				</span>{" "}
+				No goal set for this week.
+			</p>
+		);
+	}
+
+	if (!userHasAuthorization && !currentGoal) {
+		return (
+			<p>
+				<span>
+					<FontAwesomeIcon className="goalNotSet" icon={faCircleExclamation} />
+				</span>{" "}
+				No goal set for this week.
+			</p>
+		);
+	}
+
+	if (!userHasAuthorization && currentGoal && !goalDone) {
+		return (
+			<p>
+				<span>
+					<FontAwesomeIcon className="goalSet" icon={faPersonRunning} />
+				</span>{" "}
+				{currentGoal}
+			</p>
+		);
+	}
+
+	if (!userHasAuthorization && currentGoal && goalDone) {
+		return (
+			<p>
+				<span>
+					<FontAwesomeIcon className="goalDone" icon={faCircleCheck} />
+				</span>{" "}
+				{currentGoal} <span className="italic">(Completed!)</span>
+			</p>
+		);
 	}
 };
 
