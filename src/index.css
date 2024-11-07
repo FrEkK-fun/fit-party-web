@@ -476,6 +476,11 @@ p.success {
 	margin-right: 0.5rem;
 }
 
+.class-change:hover {
+	cursor: pointer;
+	color: var(--clr-accent);
+}
+
 .team-color-blue {
 	color: var(--clr-team-blue);
 	margin-right: 0.5rem;

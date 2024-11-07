@@ -27,6 +27,14 @@ export const playerReducer = (state, action) => {
 					),
 				},
 			};
+		case "UPDATE_PLAYER":
+			return {
+				...state,
+				player: {
+					...state.player,
+					...action.payload,
+				},
+			};
 		default:
 			return state;
 	}
