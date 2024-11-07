@@ -5,8 +5,8 @@ import WeeklyGoal from "./WeeklyGoal";
 import backendURL from "../config";
 import getWeekNumber from "../utils/getWeekNumber";
 import parseTimestamp from "../utils/parseTimestamp";
-import getPlayerClassIcon from "../utils/getPlayerClassIcon";
 import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
+import PlayerClass from "./PlayerClass";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
@@ -58,10 +58,7 @@ const PlayerDetails = ({ player }) => {
 					{player.team.isTeamLeader ? "(TEAM LEADER)" : ""}
 				</span>
 			</p>
-			<p>
-				{getPlayerClassIcon(player.properties.class)} Class:{" "}
-				{player.properties.class}
-			</p>
+			<PlayerClass />
 			<ul className="userPropertiesList">
 				<li>
 					<p>
