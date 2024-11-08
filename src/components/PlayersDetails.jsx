@@ -50,12 +50,19 @@ const PlayersDetails = ({ player }) => {
 		}
 	}
 
-	// Count the number of sessions the player has for this week
-	const sessionsThisWeek = player.sessions.filter((session) => {
-		const sessionWeek = getWeekNumber(session.timestamp);
-		const currentWeek = getWeekNumber(new Date());
-		return sessionWeek === currentWeek;
-	});
+	// Find sessions for the current week
+	const sessionsThisWeek = [];
+	function findSessionsThisWeek(player) {
+		player.sessions.forEach((session) => {
+			const sessionWeek = getWeekNumber(session.timestamp);
+			const currentWeek = getWeekNumber(new Date());
+			if (sessionWeek === currentWeek) {
+				sessionsThisWeek.push(session);
+			}
+		});
+	}
+
+	findSessionsThisWeek(player);
 
 	return (
 		<div className="players-details">
