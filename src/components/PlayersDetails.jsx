@@ -4,6 +4,7 @@ import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
 
 import getPlayerClassIcon from "../utils/getPlayerClassIcon";
 import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
+import getWeekNumber from "../utils/getWeekNumber";
 
 const PlayersDetails = ({ player }) => {
 	// Render player's weekly goal
@@ -49,6 +50,13 @@ const PlayersDetails = ({ player }) => {
 		}
 	}
 
+	// Count the number of sessions the player has for this week
+	const sessionsThisWeek = player.sessions.filter((session) => {
+		const sessionWeek = getWeekNumber(session.timestamp);
+		const currentWeek = getWeekNumber(new Date());
+		return sessionWeek === currentWeek;
+	});
+
 	return (
 		<div className="players-details">
 			<Link to={`/players/${player._id}`}>
@@ -72,7 +80,8 @@ const PlayersDetails = ({ player }) => {
 						icon={byPrefixAndName.fas["weight-hanging"]}
 						className="class-icon"
 					/>{" "}
-					{player.sessions.length} sessions total
+					{sessionsThisWeek.length}{" "}
+					{sessionsThisWeek.length > 1 ? "sessions" : "session"} this week
 				</p>
 				<div className="margin--top">{renderPlayerGoal(player)}</div>
 			</Link>
