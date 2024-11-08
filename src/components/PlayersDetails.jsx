@@ -4,6 +4,11 @@ import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
 
 import getPlayerClassIcon from "../utils/getPlayerClassIcon";
 import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
+import {
+	playerWeeklySessions,
+	playerSessionsPerDay,
+} from "../utils/getPlayerWeeklySessions";
+import { xpPerDay, xpThisWeek } from "../utils/calcXp";
 
 const PlayersDetails = ({ player }) => {
 	// Render player's weekly goal
@@ -49,13 +54,21 @@ const PlayersDetails = ({ player }) => {
 		}
 	}
 
+	// Find sessions for the current week
+	const sessionsThisWeek = playerWeeklySessions(player);
+	const sessionsPerDay = playerSessionsPerDay(player);
+
+	// Calculate player's total XP for the week
+	const dailyXp = xpPerDay(sessionsPerDay);
+	const weeklyXp = xpThisWeek(dailyXp);
+
 	return (
 		<div className="players-details">
 			<Link to={`/players/${player._id}`}>
 				<h3 className="margin--bottom">
 					{player.name}{" "}
 					<span className="span-players-info">
-						{player.properties.xp} xp / level {player.properties.level}
+						{weeklyXp} XP / level {player.properties.level}
 					</span>
 				</h3>
 				<p className="flex">
@@ -72,7 +85,8 @@ const PlayersDetails = ({ player }) => {
 						icon={byPrefixAndName.fas["weight-hanging"]}
 						className="class-icon"
 					/>{" "}
-					{player.sessions.length} sessions total
+					{sessionsThisWeek.length}{" "}
+					{sessionsThisWeek.length > 1 ? "sessions" : "session"} this week
 				</p>
 				<div className="margin--top">{renderPlayerGoal(player)}</div>
 			</Link>
