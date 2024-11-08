@@ -7,6 +7,8 @@ import { usePlayerContext } from "../hooks/usePlayerContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import getPlayerClassIcon from "../utils/getPlayerClassIcon";
 import backendURL from "../config";
+import getWeekday from "../utils/getWeekday";
+import { el } from "date-fns/locale";
 
 export default function PlayerClass() {
 	const { player, dispatch } = usePlayerContext();
@@ -44,6 +46,15 @@ export default function PlayerClass() {
 		}
 	};
 
+	const today = getWeekday(Date.now());
+	let changeDay;
+
+	if (today === "monday" || today === "tuesday") {
+		changeDay = true;
+	} else {
+		changeDay = false;
+	}
+
 	let content;
 
 	if (!userHasAuthorization) {
@@ -71,11 +82,13 @@ export default function PlayerClass() {
 				<div>
 					<p>
 						{getPlayerClassIcon(selectedClass)} Class: {selectedClass}{" "}
-						<FontAwesomeIcon
-							icon={byPrefixAndName.fas["pen-to-square"]}
-							className="class-icon class-change"
-							onClick={handleEditClick}
-						/>
+						{changeDay && (
+							<FontAwesomeIcon
+								icon={byPrefixAndName.fas["pen-to-square"]}
+								className="class-icon class-change"
+								onClick={handleEditClick}
+							/>
+						)}
 					</p>
 				</div>
 			);
