@@ -13,6 +13,11 @@ import PlayersDetails from "../components/PlayersDetails";
 
 const Players = () => {
 	const [players, setPlayers] = useState(null);
+	const [teamStats, setTeamStats] = useState({
+		blue: { count: 0, weeklyXp: 0, weeklySessions: 0 },
+		red: { count: 0, weeklyXp: 0, weeklySessions: 0 },
+		yellow: { count: 0, weeklyXp: 0, weeklySessions: 0 },
+	});
 
 	useEffect(() => {
 		const fetchPlayers = async () => {
@@ -21,23 +26,28 @@ const Players = () => {
 
 			if (res.ok) {
 				setPlayers(json);
+				setTeamStats({
+					blue: {
+						count: getTeamPlayerCount(json, "Blue"),
+						weeklyXp: getTeamWeeklyXp(json, "Blue"),
+						weeklySessions: getTeamWeeklySessions(json, "Blue"),
+					},
+					red: {
+						count: getTeamPlayerCount(json, "Red"),
+						weeklyXp: getTeamWeeklyXp(json, "Red"),
+						weeklySessions: getTeamWeeklySessions(json, "Red"),
+					},
+					yellow: {
+						count: getTeamPlayerCount(json, "Yellow"),
+						weeklyXp: getTeamWeeklyXp(json, "Yellow"),
+						weeklySessions: getTeamWeeklySessions(json, "Yellow"),
+					},
+				});
 			}
 		};
 
 		fetchPlayers();
 	}, []);
-
-	const blueTeamCount = getTeamPlayerCount(players, "Blue");
-	const redTeamCount = getTeamPlayerCount(players, "Red");
-	const yellowTeamCount = getTeamPlayerCount(players, "Yellow");
-
-	const blueTeamWeeklyXp = getTeamWeeklyXp(players, "Blue");
-	const redTeamWeeklyXp = getTeamWeeklyXp(players, "Red");
-	const yellowTeamWeeklyXp = getTeamWeeklyXp(players, "Yellow");
-
-	const blueTeamWeeklySessions = getTeamWeeklySessions(players, "Blue");
-	const redTeamWeeklySessions = getTeamWeeklySessions(players, "Red");
-	const yellowTeamWeeklySessions = getTeamWeeklySessions(players, "Yellow");
 
 	return (
 		<main>
@@ -50,15 +60,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>{players && blueTeamCount} players</p>
+						<p>{players && teamStats.blue.count} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && blueTeamWeeklyXp} xp</p>
+						<p>{players && teamStats.blue.weeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && blueTeamWeeklySessions} sessions</p>
+						<p>{players && teamStats.blue.weeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
@@ -79,15 +89,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>{players && redTeamCount} players</p>
+						<p>{players && teamStats.red.count} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && redTeamWeeklyXp} xp</p>
+						<p>{players && teamStats.red.weeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && redTeamWeeklySessions} sessions</p>
+						<p>{players && teamStats.red.weeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
@@ -108,15 +118,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>{players && yellowTeamCount} players</p>
+						<p>{players && teamStats.yellow.count} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && yellowTeamWeeklyXp} xp</p>
+						<p>{players && teamStats.yellow.weeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>{players && yellowTeamWeeklySessions} sessions</p>
+						<p>{players && teamStats.yellow.weeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
