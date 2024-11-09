@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
-import backendURL from "../config";
 import { faFlag } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import backendURL from "../config";
+import {
+	getTeamPlayerCount,
+	getTeamWeeklyXp,
+	getTeamWeeklySessions,
+} from "../utils/getTeamStats";
 
 // Components
 import PlayersDetails from "../components/PlayersDetails";
@@ -22,6 +27,18 @@ const Players = () => {
 		fetchPlayers();
 	}, []);
 
+	const blueTeamCount = getTeamPlayerCount(players, "Blue");
+	const redTeamCount = getTeamPlayerCount(players, "Red");
+	const yellowTeamCount = getTeamPlayerCount(players, "Yellow");
+
+	const blueTeamWeeklyXp = getTeamWeeklyXp(players, "Blue");
+	const redTeamWeeklyXp = getTeamWeeklyXp(players, "Red");
+	const yellowTeamWeeklyXp = getTeamWeeklyXp(players, "Yellow");
+
+	const blueTeamWeeklySessions = getTeamWeeklySessions(players, "Blue");
+	const redTeamWeeklySessions = getTeamWeeklySessions(players, "Red");
+	const yellowTeamWeeklySessions = getTeamWeeklySessions(players, "Yellow");
+
 	return (
 		<main>
 			<div className="teamWrapper">
@@ -33,35 +50,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players.filter((player) => player.team.teamName === "Blue")
-									.length}{" "}
-							players
-						</p>
+						<p>{players && blueTeamCount} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Blue")
-									.reduce((acc, player) => acc + player.properties.xp, 0)}{" "}
-							xp
-						</p>
+						<p>{players && blueTeamWeeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Blue")
-									.reduce(
-										(acc, player) => acc + player.sessions.length,
-										0
-									)}{" "}
-							sessions
-						</p>
+						<p>{players && blueTeamWeeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
@@ -82,35 +79,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players.filter((player) => player.team.teamName === "Red")
-									.length}{" "}
-							players
-						</p>
+						<p>{players && redTeamCount} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Red")
-									.reduce((acc, player) => acc + player.properties.xp, 0)}{" "}
-							xp
-						</p>
+						<p>{players && redTeamWeeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Red")
-									.reduce(
-										(acc, player) => acc + player.sessions.length,
-										0
-									)}{" "}
-							sessions
-						</p>
+						<p>{players && redTeamWeeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
@@ -131,35 +108,15 @@ const Players = () => {
 				</h2>
 				<div className="teamStats">
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players.filter((player) => player.team.teamName === "Yellow")
-									.length}{" "}
-							players
-						</p>
+						<p>{players && yellowTeamCount} players</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Yellow")
-									.reduce((acc, player) => acc + player.properties.xp, 0)}{" "}
-							xp
-						</p>
+						<p>{players && yellowTeamWeeklyXp} xp</p>
 						<p>//</p>
 					</div>
 					<div className="flex flex-column">
-						<p>
-							{players &&
-								players
-									.filter((player) => player.team.teamName === "Yellow")
-									.reduce(
-										(acc, player) => acc + player.sessions.length,
-										0
-									)}{" "}
-							sessions
-						</p>
+						<p>{players && yellowTeamWeeklySessions} sessions</p>
 					</div>
 				</div>
 				<div className="players">
