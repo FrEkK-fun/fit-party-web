@@ -14,7 +14,12 @@ export const playerReducer = (state, action) => {
 				...state,
 				player: {
 					...state.player,
-					sessions: [action.payload, ...state.player.sessions],
+					sessions: [action.payload.session, ...state.player.sessions],
+					weekly: {
+						...state.player.weekly,
+						xp: action.payload.weeklyXp,
+						level: action.payload.weeklyLevel,
+					},
 				},
 			};
 		case "DELETE_SESSION":
