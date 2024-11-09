@@ -4,11 +4,7 @@ import { byPrefixAndName } from "@awesome.me/kit-43505c22f8/icons";
 
 import getPlayerClassIcon from "../utils/getPlayerClassIcon";
 import getPlayerTeamIcon from "../utils/getPlayerTeamIcon";
-import {
-	playerWeeklySessions,
-	playerSessionsPerDay,
-} from "../utils/getPlayerWeeklySessions";
-import { xpPerDay, xpThisWeek } from "../utils/calcXp";
+import { playerWeeklySessions } from "../utils/getPlayerWeeklySessions";
 
 const PlayersDetails = ({ player }) => {
 	// Render player's weekly goal
@@ -56,11 +52,6 @@ const PlayersDetails = ({ player }) => {
 
 	// Find sessions for the current week
 	const sessionsThisWeek = playerWeeklySessions(player);
-	const sessionsPerDay = playerSessionsPerDay(player);
-
-	// Calculate player's total XP for the week
-	const dailyXp = xpPerDay(sessionsPerDay);
-	const weeklyXp = xpThisWeek(dailyXp);
 
 	return (
 		<div className="players-details">
@@ -68,7 +59,7 @@ const PlayersDetails = ({ player }) => {
 				<h3 className="margin--bottom">
 					{player.name}{" "}
 					<span className="span-players-info">
-						{weeklyXp} XP / level {player.properties.level}
+						{player.weekly.xp} XP / level {player.weekly.level}
 					</span>
 				</h3>
 				<p className="flex">
