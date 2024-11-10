@@ -80,7 +80,10 @@ const PlayerDetails = ({ player }) => {
 				</li>
 			</ul>
 
-			<h4>Weekly goal</h4>
+			<h4>Weekly</h4>
+			<p>
+				{player.weekly.xp} xp / level {player.weekly.level}
+			</p>
 			<WeeklyGoal player={player} />
 
 			<div className="sessionCardsContainer">
