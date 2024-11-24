@@ -136,7 +136,7 @@ const PlayerDetails = ({ player }) => {
 												/>
 											)}{" "}
 											<strong>{session.intensity}</strong> intensity{" "}
-											<strong>{session.title}</strong>
+											<strong>{session.title.toLowerCase()}</strong>
 										</p>
 										<p className="italic">
 											{formatDistanceToNow(parseTimestamp(session.timestamp), {
