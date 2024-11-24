@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faCircleExclamation,
-	faCircleCheck,
-	faPersonRunning,
-} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 import backendURL from "../config";
 import getWeekday from "../utils/getWeekday";
 
@@ -116,7 +112,7 @@ const WeeklyGoal = ({ player }) => {
 		return (
 			<p>
 				<span>
-					<FontAwesomeIcon className="goalNotSet" icon={faCircleExclamation} />
+					<FontAwesomeIcon className="goalNotSet" icon={byPrefixAndName.fas['circle-exclamation']} />
 				</span>{" "}
 				No goal set for this week.
 			</p>
@@ -127,7 +123,7 @@ const WeeklyGoal = ({ player }) => {
 		return (
 			<p>
 				<span>
-					<FontAwesomeIcon className="goalNotSet" icon={faCircleExclamation} />
+					<FontAwesomeIcon className="goalNotSet" icon={byPrefixAndName.fas['circle-exclamation']} />
 				</span>{" "}
 				No goal set for this week.
 			</p>
@@ -138,7 +134,7 @@ const WeeklyGoal = ({ player }) => {
 		return (
 			<p>
 				<span>
-					<FontAwesomeIcon className="goalSet" icon={faPersonRunning} />
+					<FontAwesomeIcon className="goalSet" icon={byPrefixAndName.fas['person-running']} />
 				</span>{" "}
 				{currentGoal}
 			</p>
@@ -149,7 +145,8 @@ const WeeklyGoal = ({ player }) => {
 		return (
 			<p>
 				<span>
-					<FontAwesomeIcon className="goalDone" icon={faCircleCheck} />
+					<FontAwesomeIcon className="goalDone" icon={byPrefixAndName.fas['circle-check']} />
+					
 				</span>{" "}
 				{currentGoal} <span className="italic">(Completed!)</span>
 			</p>

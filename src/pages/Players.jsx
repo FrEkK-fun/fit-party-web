@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { faFlag } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 import backendURL from "../config";
 import {
 	getTeamPlayerCount,
@@ -54,7 +54,7 @@ const Players = () => {
 			<div className="teamWrapper">
 				<h2>
 					<span>
-						<FontAwesomeIcon icon={faFlag} className="team-color-blue" />
+						<FontAwesomeIcon className="team-color-blue" icon={byPrefixAndName.fas['flag']} />
 					</span>
 					Blue team
 				</h2>
@@ -83,7 +83,7 @@ const Players = () => {
 			<div className="teamWrapper">
 				<h2>
 					<span>
-						<FontAwesomeIcon icon={faFlag} className="team-color-red" />
+						<FontAwesomeIcon className="team-color-red" icon={byPrefixAndName.fas['flag']} />
 					</span>
 					Red team
 				</h2>
@@ -112,7 +112,7 @@ const Players = () => {
 			<div className="teamWrapper">
 				<h2>
 					<span>
-						<FontAwesomeIcon icon={faFlag} className="team-color-yellow" />
+						<FontAwesomeIcon className="team-color-yellow" icon={byPrefixAndName.fas['flag']} />
 					</span>
 					Yellow team
 				</h2>
