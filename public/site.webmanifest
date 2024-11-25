@@ -1,0 +1,29 @@
+{
+  "name": "FrEkK Fit Party",
+  "short_name": "Fit Party",
+  "description": "A fun and engaging fitness app",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/frekkFitFavIcon16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/frekkFitFavIcon32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/frekkFitFavIcon180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/frekkFitFavIcon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
