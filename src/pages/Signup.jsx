@@ -1,6 +1,10 @@
 import { useState } from 'react';
-import { useSignup } from '../hooks/useSignup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+
+import useAuthStore from '../store/authStore';
+import { poster } from '../utils/http';
+import { saveLocal } from '../utils/localStorage';
 
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
@@ -9,12 +13,26 @@ import Notification from '../components/Notification';
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { error, isLoading, signup } = useSignup();
+  const loginUser = useAuthStore((state) => state.login);
+  const navigate = useNavigate();
+
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: (body) =>
+      poster({
+        url: '/user/signup',
+        body,
+      }),
+    onSuccess: (data) => {
+      loginUser(data);
+      saveLocal('user', data);
+      navigate('/');
+    },
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await signup(email, password);
+    await mutate({ email, password });
   };
 
   return (
@@ -41,12 +59,12 @@ const Signup = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button disabled={isLoading} type="submit">
+        <Button disabled={isPending} type="submit">
           Sign Up
         </Button>
-        {error && (
+        {isError && (
           <div className="mt-6">
-            <Notification type="error">{error}</Notification>
+            <Notification type="error">{error.message}</Notification>
           </div>
         )}
       </form>
