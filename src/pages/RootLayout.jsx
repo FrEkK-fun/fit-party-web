@@ -6,7 +6,7 @@ export default function RootLayout() {
   return (
     <>
       <Navbar />
-      <main className="flex flex-grow">
+      <main className="flex flex-grow px-4">
         <Outlet />
       </main>
     </>
