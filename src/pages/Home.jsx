@@ -1,59 +1,50 @@
-import { useAuthContext } from "../hooks/useAuthContext";
-import CreatePlayerForm from "../components/CreatePlayerForm";
+import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
-import { useEffect } from "react";
-import { usePlayerContext } from "../hooks/usePlayerContext";
-import backendURL from "../config";
+import useAuthStore from '../store/authStore';
+import usePlayerStore from '../store/playerStore';
+import { fetcher } from '../utils/http';
+import { loadLocal } from '../utils/localStorage';
 
-// Components
-import SessionForm from "../components/SessionForm";
-import WeeklyGoal from "../components/WeeklyGoal";
+import CreatePlayerForm from '../components/CreatePlayerForm';
+import SessionForm from '../components/SessionForm';
+import WeeklyGoal from '../components/WeeklyGoal';
 
 const Home = () => {
-	const { user } = useAuthContext();
+  const user = useAuthStore((state) => state.user) || loadLocal('user');
+  const setPlayer = usePlayerStore((state) => state.setPlayer);
+  const player = usePlayerStore((state) => state.player);
+  const playerId = user?.players?.[0];
 
-	const { player, dispatch } = usePlayerContext();
-	const playerId = user?.players?.[0];
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: [`/players/${playerId}`, user.token],
+    queryFn: fetcher,
+  });
 
-	useEffect(() => {
-		const fetchPlayer = async () => {
-			const res = await fetch(`${backendURL}/api/players/${playerId}`, {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			});
-			const json = await res.json();
+  useEffect(() => {
+    if (data) {
+      setPlayer(data);
+    }
+  }, [data, setPlayer]);
 
-			if (res.ok) {
-				dispatch({ type: "SET_PLAYER", payload: json });
-			}
-		};
+  if (!user.players || user.players.length === 0) {
+    return <CreatePlayerForm />;
+  }
 
-		if (user) {
-			fetchPlayer();
-		}
-	}, [dispatch, playerId, user]);
-
-	// If the user has no players, show the create player form
-	if (!user.players || user.players.length === 0) {
-		return <CreatePlayerForm />;
-	}
-
-	// If the user is logged in and has players, show the home content
-	return (
-		<main>
-			<h2>Home</h2>
-			<div>
-				{player && <SessionForm />}
-				{player && player.weekly.goal.description === "" && (
-					<div>
-						<h3>Weekly goal</h3>
-						<WeeklyGoal player={player} />
-					</div>
-				)}
-			</div>
-		</main>
-	);
+  return (
+    <main>
+      <h2>Home</h2>
+      <div>
+        {player && <SessionForm />}
+        {player && player.weekly.goal.description === '' && (
+          <div>
+            <h3>Weekly goal</h3>
+            <WeeklyGoal player={player} />
+          </div>
+        )}
+      </div>
+    </main>
+  );
 };
 
 export default Home;
