@@ -2,30 +2,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 :root {
-  --color-neutral-neutral-lighter: #f5f5f5;
-  --lochinvar-400: #4b8175;
   --dark-ff-blue-darker: #051e2a;
-  --dark-ff-blue: #092a3c;
-  --color-system-success-green-light: #dcebe6;
-  --mexican-red-300: #aa302b;
-  --lochinvar-600: #3a6b5e;
-  --lochinvar-900: #2a4d3f;
-  --color-neutral-neutral-dark: #333333;
-  --color-neutral-neutral-light: #cccccc;
+  --dark-ff-blue: #152732;
+  --mexican-red-300: #ff92a4;
+  --lochinvar-400: #52afac;
+  --lochinvar-600: #2b7676;
+  --lochinvar-800: #224c4d;
+  --lochinvar-900: #204041;
+  --vanilla-50: #f9f7f3;
+  --vanilla-300: #cebea6;
+  --vanilla-700: #82614c;
+  --vanilla-800: #6a5042;
+  --vanilla-950: #2e221c;
+  --international-klein-blue-300: #75bbff;
   --color-neutral-white: #ffffff;
-  --color-system-success-green: #4b8175;
-  --color-system-error-red: #aa302b;
-  --international-klein-blue-300: #7dcbc7;
+  --color-neutral-neutral-lighter: #cccccc;
+  --color-neutral-neutral-light: #aaaaaa;
   --color-neutral-neutral: #666666;
-  --vanilla-950: #f5f5dc;
-  --lochinvar-800: #2a4d3f;
-  --vanilla-50: #fdf5e6;
+  --color-neutral-neutral-dark: #444444;
+  --color-neutral-neutral-darker: #222222;
   --color-neutral-black: #000000;
-  --vanilla-300: #f5deb3;
-  --vanilla-700: #deb887;
-  --vanilla-800: #d2b48c;
-  --color-system-error-red-light: #f9d1cf;
-  --color-neutral-neutral-darker: #1a1a1a;
+  --color-system-success-green-light: #cfceb0;
+  --color-system-success-green: #6ba127;
+  --color-system-error-red-light: #f7dee2;
+  --color-system-error-red: #9c001a;
 }
 
 @tailwind base;
