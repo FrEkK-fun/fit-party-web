@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 
+import { loadLocal } from '../utils/localStorage';
+
 const useAuthStore = create((set) => ({
-  user: null,
+  user: loadLocal('user') || null,
   login: (user) => set({ user }),
   logout: () => set({ user: null }),
   addPlayer: (newPlayer) =>
