@@ -8,7 +8,7 @@ export default function Button({ type, children, ...props }) {
     primary:
       'border-border-tertiary bg-background-color-button-primary dark:border-border-tertiary-dark dark:bg-background-color-button-primary-dark',
     secondary:
-      'border-border-tertiary bg-background-color-button-secondary dark:border-border-tertiary-dark dark:bg-background-color-button-secondary-dark',
+      'border-border-tertiary bg-background-color-button-secondary dark:border-border-tertiary-dark dark:bg-background-color-button-secondary-dark dark:hover:border-border-secondary-dark hover:border-border-secondary',
   };
 
   // In your component:
