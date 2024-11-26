@@ -1,132 +1,156 @@
-import { useState } from "react";
-import { useAuthContext } from "../hooks/useAuthContext";
-import backendURL from "../config";
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+
+import useAuthStore from '../store/authStore';
+import { poster, patcher } from '../utils/http';
+import { saveLocal } from '../utils/localStorage';
+
+import FormInput from './FormInput';
+import FormSelect from './FormSelect';
+import Button from './Button';
+import Notification from './Notification';
 
 const CreatePlayerForm = () => {
-	const { dispatch, user } = useAuthContext();
+  const [name, setName] = useState('');
+  const [playerClass, setPlayerClass] = useState('');
+  const [team, setTeam] = useState('');
+  const user = useAuthStore((state) => state.user);
+  const addPlayer = useAuthStore((state) => state.addPlayer);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-	const [name, setName] = useState("");
-	const [playerClass, setPlayerClass] = useState("");
-	const [team, setTeam] = useState("");
-	const [error, setError] = useState(null);
+  // Create player mutation
+  const createPlayerMutation = useMutation({
+    mutationFn: (newPlayer) =>
+      poster({
+        url: '/players',
+        body: newPlayer,
+      }),
+    onSuccess: (data) => {
+      // Update user document mutation
+      updateUserMutation.mutate({
+        playerId: data._id,
+        token: user.token,
+      });
+    },
+  });
 
-	const localStorageUser = JSON.parse(localStorage.getItem("user"));
+  // Update user mutation
+  const updateUserMutation = useMutation({
+    mutationFn: (updateData) =>
+      patcher({
+        url: '/user/updateUserPlayers',
+        body: updateData,
+        token: user.token,
+      }),
+    onSuccess: (data) => {
+      // Update auth store with new player
+      addPlayer(data);
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+      // Update local storage
+      const updatedUser = {
+        ...user,
+        players: [...(user.players || []), data._id],
+      };
+      saveLocal('user', updatedUser);
 
-		const newPlayer = {
-			name: name,
-			userId: "65df1acca34a41a5739908e2",
-			icon: "",
-			team: {
-				teamName: team,
-				isTeamLeader: false,
-			},
-			properties: {
-				class: playerClass,
-				level: 1,
-				xp: 0,
-				attack: 0,
-				defence: 0,
-			},
-			weekly: {
-				goal: { description: "", done: false },
-				xp: 0,
-				level: 0,
-			},
-			sessions: [],
-		};
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ['players'] });
 
-		const res = await fetch(`${backendURL}/api/players`, {
-			method: "POST",
-			body: JSON.stringify(newPlayer),
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-		const json = await res.json();
+      // Navigate to home
+      navigate('/');
+    },
+  });
 
-		if (!res.ok) {
-			setError(json.error);
-		}
-		if (res.ok) {
-			setError(null);
-			dispatch({ type: "ADD_PLAYER", payload: json });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-			const newPlayerId = json._id;
-			const userToken = user.token;
+    const newPlayer = {
+      name,
+      userId: user.userId,
+      icon: '',
+      team: {
+        teamName: team,
+        isTeamLeader: false,
+      },
+      properties: {
+        class: playerClass,
+        level: 1,
+        xp: 0,
+        attack: 0,
+        defence: 0,
+      },
+      weekly: {
+        goal: { description: '', done: false },
+        xp: 0,
+        level: 0,
+      },
+      sessions: [],
+    };
 
-			// Send a request to the backend to update the user's document
-			const updateUserResponse = await fetch(
-				`${backendURL}/api/user/updateUserPlayers`,
-				{
-					method: "PATCH",
-					body: JSON.stringify({ playerId: newPlayerId, token: userToken }),
-					headers: {
-						"Content-Type": "application/json",
-					},
-				}
-			);
+    createPlayerMutation.mutate(newPlayer);
+  };
 
-			const updatedUser = await updateUserResponse.json();
-			// Update the user's players array
-			localStorageUser.players = updatedUser.players;
-			// Update the user in local storage
-			localStorage.setItem("user", JSON.stringify(localStorageUser));
-			// Update the user context
-			dispatch({ type: "UPDATE_USER", payload: updatedUser });
-		}
-	};
-
-	return (
-		<main>
-			<form onSubmit={handleSubmit}>
-				<h3 className="margin--bottom">Create a new player</h3>
-				<label>Name:</label>
-				<input
-					className="margin--none"
-					type="text"
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-				/>
-				<div className="flex flex--column">
-					<label className="margin--top" htmlFor="class-select">
-						Class:
-					</label>
-					<select
-						className="margin--none"
-						name="class"
-						id="class-select"
-						value={playerClass}
-						onChange={(e) => setPlayerClass(e.target.value)}>
-						<option>--- SELECT ONE ---</option>
-						<option value="Fighter">Fighter</option>
-						<option value="Defender">Defender</option>
-						<option value="Explorer">Explorer</option>
-					</select>
-					<label className="margin--top" htmlFor="team-select">
-						Team:
-					</label>
-					<select
-						className="margin--none"
-						name="team"
-						id="team-select"
-						value={team}
-						onChange={(e) => setTeam(e.target.value)}>
-						<option>--- SELECT ONE ---</option>
-						<option value="Blue">Blue</option>
-						<option value="Red">Red</option>
-						<option value="Yellow">Yellow</option>
-					</select>
-				</div>
-				<button className="margin--top" type="submit">
-					Create player
-				</button>
-				{error && <p className="error">{error}</p>}
-			</form>
-		</main>
-	);
+  return (
+    <div className="flex w-full flex-col gap-12">
+      <div className="mx-auto mt-12 text-text-primary dark:text-text-primary-dark">
+        <h1 className="mb-6 text-center text-5xl font-bold text-text-header dark:text-text-header-dark">
+          Create New Player
+        </h1>
+        <p className="text-center">
+          Create a new player to start your FrEkK Fit Party journey
+        </p>
+      </div>
+      <form
+        className="mx-auto flex w-full flex-col gap-6 sm:max-w-sm"
+        onSubmit={handleSubmit}
+      >
+        <FormInput
+          label="Player name"
+          type="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <FormSelect
+          label="Class"
+          value={playerClass}
+          onChange={(e) => setPlayerClass(e.target.value)}
+        >
+          <option>--- SELECT ONE ---</option>
+          <option value="Fighter">Fighter</option>
+          <option value="Defender">Defender</option>
+          <option value="Explorer">Explorer</option>
+        </FormSelect>
+        <FormSelect
+          label="Team"
+          value={team}
+          onChange={(e) => setTeam(e.target.value)}
+        >
+          <option>--- SELECT ONE ---</option>
+          <option value="Blue">Blue</option>
+          <option value="Red">Red</option>
+          <option value="Yellow">Yellow</option>
+        </FormSelect>
+        <Button
+          disabled={
+            createPlayerMutation.isPending || updateUserMutation.isPending
+          }
+          type="submit"
+        >
+          Create Player
+        </Button>
+        {(createPlayerMutation.isError || updateUserMutation.isError) && (
+          <div className="mt-6">
+            <Notification type="error">
+              {createPlayerMutation.error?.message ||
+                updateUserMutation.error?.message}
+            </Notification>
+          </div>
+        )}
+      </form>
+    </div>
+  );
 };
 
 export default CreatePlayerForm;
