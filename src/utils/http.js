@@ -52,3 +52,26 @@ export async function poster({ url, body }) {
     throw new Error(error.message || 'Failed to make request');
   }
 }
+
+export async function patcher({ url, body, token }) {
+  try {
+    const response = await fetch(`${baseUrl}${url}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'An error occurred while updating data');
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to make request');
+  }
+}
