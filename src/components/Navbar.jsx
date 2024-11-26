@@ -19,6 +19,10 @@ const Navbar = () => {
     logout();
   };
 
+  const handleToggleTheme = () => {
+    document.documentElement.classList.toggle('dark');
+  };
+
   const toggleMenu = (e) => {
     e.stopPropagation(); // Prevent event propagation
     setIsOpen(!isOpen);
@@ -50,11 +54,13 @@ const Navbar = () => {
   return (
     <div className="mb-6 w-full bg-background-color-secondary shadow-md dark:bg-background-color-secondary-dark">
       {/* Hamburger menu icon */}
-      <FontAwesomeIcon
-        icon={byPrefixAndName.fas[!isOpen ? 'bars' : 'x']}
-        onClick={toggleMenu}
-        className="absolute right-4 top-6 text-2xl text-color-system-accent-pink sm:hidden"
-      />
+      {user && (
+        <FontAwesomeIcon
+          icon={byPrefixAndName.fas[!isOpen ? 'bars' : 'x']}
+          onClick={toggleMenu}
+          className="absolute right-4 top-6 text-2xl text-color-system-accent-pink sm:hidden"
+        />
+      )}
 
       <header className="mx-auto flex max-w-[1536px] justify-between p-4">
         <div className="flex w-full flex-col justify-between gap-6 sm:flex-row">
@@ -103,6 +109,11 @@ const Navbar = () => {
                   </li>
                 </ul>
               )}
+              {/* <ul>
+                <li>
+                  <Button onClick={handleToggleTheme}>Theme</Button>
+                </li>
+              </ul> */}
             </nav>
           )}
         </div>

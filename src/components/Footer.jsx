@@ -1,23 +1,30 @@
 import { Link } from 'react-router-dom';
+import useAuthStore from '../store/authStore';
 
 export default function Footer() {
+  const user = useAuthStore((state) => state.user);
+
   return (
     <footer className="mx-auto my-12 flex w-full max-w-[1536px] flex-col items-center justify-center gap-12 px-4 text-text-primary dark:text-text-primary-dark">
       <img src="/frekkFitLogo.svg" alt="Frekk Fit Party logo" />
-      <nav>
-        <ul className="flex flex-col gap-4 text-center sm:flex-row">
-          <li className="text-link-primary hover:underline dark:text-link-primary-dark">
-            <Link to="/players">Player Insights</Link>
-          </li>
-          <li className="text-link-primary hover:underline dark:text-link-primary-dark">
-            <Link to="/blog">Blog</Link>
-          </li>
-          <li className="text-link-primary hover:underline dark:text-link-primary-dark">
-            <Link to="/docs">Docs</Link>
-          </li>
-        </ul>
-      </nav>
-      <div className="w-2/3 border-b border-border-primary sm:w-full dark:border-border-primary-dark"></div>
+      {user && (
+        <>
+          <nav>
+            <ul className="flex flex-col gap-4 text-center sm:flex-row">
+              <li className="text-link-primary hover:underline dark:text-link-primary-dark">
+                <Link to="/players">Player Insights</Link>
+              </li>
+              <li className="text-link-primary hover:underline dark:text-link-primary-dark">
+                <Link to="/blog">Blog</Link>
+              </li>
+              <li className="text-link-primary hover:underline dark:text-link-primary-dark">
+                <Link to="/docs">Docs</Link>
+              </li>
+            </ul>
+          </nav>
+          <div className="w-2/3 border-b border-border-primary sm:w-full dark:border-border-primary-dark"></div>
+        </>
+      )}
       <div className="flex w-full flex-col gap-4 text-sm sm:flex-row-reverse sm:items-center sm:justify-between">
         <nav>
           <ul className="flex flex-col gap-4 text-center sm:flex-row">
