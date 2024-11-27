@@ -9,6 +9,7 @@ import { saveLocal } from '../utils/localStorage';
 import FormInput from '../components/FormInput';
 import Button from '../components/Button';
 import Notification from '../components/Notification';
+import HeroSection from '../components/HeroSection';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -36,14 +37,12 @@ const Login = () => {
 
   return (
     <div className="flex w-full flex-col gap-12">
-      <div className="mx-auto mt-12 text-text-primary dark:text-text-primary-dark">
-        <h1 className="mb-6 text-center text-5xl font-bold text-text-header dark:text-text-header-dark">
-          Login
-        </h1>
-        <p className="text-center">Access your FrEkK Fit Party account now</p>
-      </div>
+      <HeroSection
+        title="Login"
+        text="Access your FrEkK Fit Party account now"
+      />
       <form
-        className="mx-auto flex w-full flex-col gap-6 sm:max-w-sm"
+        className="mx-auto -mt-12 flex w-full flex-col gap-6 sm:max-w-sm"
         onSubmit={handleSubmit}
       >
         <FormInput
