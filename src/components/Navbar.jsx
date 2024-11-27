@@ -52,7 +52,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="mb-6 w-full bg-background-color-secondary shadow-md dark:bg-background-color-secondary-dark">
+    <div className="w-full bg-background-color-secondary shadow-md dark:bg-background-color-secondary-dark">
       {/* Hamburger menu icon */}
       {user && (
         <FontAwesomeIcon
