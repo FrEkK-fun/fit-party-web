@@ -6,7 +6,7 @@ export default function FormRadioButton({
   onChange,
 }) {
   return (
-    <div className="flex flex-grow">
+    <div className="group flex flex-grow">
       <input
         type="radio"
         name={name}
@@ -14,11 +14,11 @@ export default function FormRadioButton({
         value={value}
         checked={checked}
         onChange={onChange}
-        className="hidden"
+        className="peer hidden"
       />
       <label
         htmlFor={value}
-        className="w-full rounded border px-4 py-2 text-center text-text-primary hover:bg-background-color-secondary dark:text-text-primary-dark hover:dark:bg-background-color-secondary-dark"
+        className="w-full rounded border border-border-tertiary px-4 py-2 text-center text-text-primary hover:cursor-pointer hover:border-border-secondary peer-checked:bg-background-color-button-primary dark:border-border-tertiary-dark dark:text-text-primary-dark dark:hover:border-border-secondary-dark dark:peer-checked:bg-background-color-button-primary-dark"
       >
         <span className="sr-only">{label} </span>
         {value}
