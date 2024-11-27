@@ -82,7 +82,7 @@ export default function SessionForm() {
           </h2>
           <form
             onSubmit={handleSubmit}
-            className="mx-auto mt-4 flex w-full flex-col gap-4 sm:w-3/4"
+            className="mx-auto mt-4 flex w-full flex-col gap-4 sm:w-3/4 md:w-1/2"
           >
             <div className="mx-auto mt-4 flex w-full flex-wrap justify-between gap-4">
               <FormRadioButton
