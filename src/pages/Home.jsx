@@ -6,9 +6,9 @@ import usePlayerStore from '../store/playerStore';
 import { fetcher } from '../utils/http';
 import { loadLocal } from '../utils/localStorage';
 
+import Notification from '../components/Notification';
 import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
-import WeeklyGoal from '../components/WeeklyGoal';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user) || loadLocal('user');
@@ -16,34 +16,34 @@ const Home = () => {
   const player = usePlayerStore((state) => state.player);
   const playerId = user?.players?.[0];
 
+  // Fetch player data
   const { data, isLoading, isError, error } = useQuery({
     queryKey: [`/players/${playerId}`, user.token],
     queryFn: fetcher,
+    enabled: !!playerId, // Only fetch if playerId is available
   });
 
+  // Set player data in store
   useEffect(() => {
     if (data) {
       setPlayer(data);
     }
   }, [data, setPlayer]);
 
+  // If user has no players, show create player form
   if (!user.players || user.players.length === 0) {
     return <CreatePlayerForm />;
   }
 
   return (
-    <main>
-      <h2>Home</h2>
-      <div>
-        {player && <SessionForm />}
-        {player && player.weekly.goal.description === '' && (
-          <div>
-            <h3>Weekly goal</h3>
-            <WeeklyGoal player={player} />
-          </div>
-        )}
-      </div>
-    </main>
+    <>
+      {isError && (
+        <div className="h-fit w-full">
+          <Notification type="error">Could not fetch player</Notification>
+        </div>
+      )}
+      {player && <SessionForm />}
+    </>
   );
 };
 
