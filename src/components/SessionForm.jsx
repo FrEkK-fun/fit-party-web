@@ -19,8 +19,9 @@ export default function SessionForm() {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [errMsg, setErrMsg] = useState('');
+  const [hasLogged, setHasLogged] = useState(false);
 
-  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (data) =>
       poster({
         url: `/sessions/players/${player._id}/sessions`,
@@ -31,16 +32,9 @@ export default function SessionForm() {
       setSession(data);
       setTitle('');
       setIntensity(null);
-      setDate('');
+      setHasLogged(true);
     },
   });
-
-  const session = {
-    intensity,
-    title,
-    timestamp: date,
-    syncTimestamp: null,
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,66 +60,87 @@ export default function SessionForm() {
       token: token,
     });
   };
+
   return (
-    <div className="mx-auto max-h-fit w-full rounded-md border-border-primary bg-background-color-secondary px-4 py-8 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
-      <h2 className="text-header-primary text-center text-2xl font-bold sm:text-3xl dark:text-text-header-dark">
-        Log Your Workout Session
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="mx-auto mt-4 flex w-full flex-col gap-4 sm:w-3/4"
-      >
-        <div className="mx-auto mt-4 flex w-full flex-wrap justify-between gap-4">
-          <FormRadioButton
-            label="Intensity"
-            type="radio"
-            name="intensity"
-            value="Easy"
-            onChange={() => setIntensity('Easy')}
-          />
-          <FormRadioButton
-            label="Intensity"
-            type="radio"
-            name="intensity"
-            value="Medium"
-            onChange={() => setIntensity('Medium')}
-          />
-          <FormRadioButton
-            label="Intensity"
-            type="radio"
-            name="intensity"
-            value="Hard"
-            onChange={() => setIntensity('Hard')}
-          />
-        </div>
-        <div className="flex w-full flex-wrap items-center justify-between gap-4">
-          <div className="xs:flex-grow xs:min-w-fit min-w-full">
-            <FormInput
-              label="Workout title"
-              hideLabel
-              placeholder="Workout title..."
-              type="text"
-              name="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-          <div className="xs:min-w-fit min-w-full flex-grow sm:flex-grow-0">
-            <FormDatePicker
-              label="Workout date"
-              type="date"
-              name="date"
-              value={date}
-              maxToday={true}
-              minThisWeek={true}
-              onChange={(e) => setDate(e.target.value)}
-            />
+    <>
+      {hasLogged && (
+        <div className="mx-auto max-h-fit w-full rounded-md border-border-primary bg-background-color-secondary px-4 py-8 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
+          <h2 className="text-header-primary text-center text-2xl font-bold sm:text-3xl dark:text-text-header-dark">
+            Your Session was Logged!
+          </h2>
+          <div className="mt-8 flex justify-center">
+            <Button onClick={() => setHasLogged(false)}>
+              Log Another Session
+            </Button>
           </div>
         </div>
-        {errMsg && <Notification type="error">{errMsg}</Notification>}
-        {isError && <Notification type="error">{error.message}</Notification>}
-        <Button type="primary">Log Workout</Button>
-      </form>
-    </div>
+      )}
+      {!hasLogged && (
+        <div className="mx-auto max-h-fit w-full rounded-md border-border-primary bg-background-color-secondary px-4 py-8 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
+          <h2 className="text-header-primary text-center text-2xl font-bold sm:text-3xl dark:text-text-header-dark">
+            Log Your Workout Session
+          </h2>
+          <form
+            onSubmit={handleSubmit}
+            className="mx-auto mt-4 flex w-full flex-col gap-4 sm:w-3/4"
+          >
+            <div className="mx-auto mt-4 flex w-full flex-wrap justify-between gap-4">
+              <FormRadioButton
+                label="Intensity"
+                type="radio"
+                name="intensity"
+                value="Easy"
+                onChange={() => setIntensity('Easy')}
+              />
+              <FormRadioButton
+                label="Intensity"
+                type="radio"
+                name="intensity"
+                value="Medium"
+                onChange={() => setIntensity('Medium')}
+              />
+              <FormRadioButton
+                label="Intensity"
+                type="radio"
+                name="intensity"
+                value="Hard"
+                onChange={() => setIntensity('Hard')}
+              />
+            </div>
+            <div className="flex w-full flex-wrap items-center justify-between gap-4">
+              <div className="xs:flex-grow xs:min-w-fit min-w-full">
+                <FormInput
+                  label="Workout title"
+                  hideLabel
+                  placeholder="Workout title..."
+                  type="text"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div className="xs:min-w-fit min-w-full flex-grow sm:flex-grow-0">
+                <FormDatePicker
+                  label="Workout date"
+                  type="date"
+                  name="date"
+                  value={date}
+                  maxToday={true}
+                  minThisWeek={true}
+                  onChange={(e) => setDate(e.target.value)}
+                />
+              </div>
+            </div>
+            {errMsg && <Notification type="error">{errMsg}</Notification>}
+            {isError && (
+              <Notification type="error">{error.message}</Notification>
+            )}
+            <Button disabled={isPending} type="primary">
+              Log Workout
+            </Button>
+          </form>
+        </div>
+      )}
+    </>
   );
 }
