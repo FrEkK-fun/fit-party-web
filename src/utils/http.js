@@ -26,16 +26,13 @@ export async function fetcher({ queryKey }) {
   }
 }
 
-export async function poster({ url, body }) {
+export async function poster({ url, body, token }) {
   try {
     const response = await fetch(`${baseUrl}${url}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Add Authorization header if token exists
-        ...(body.token && {
-          Authorization: `Bearer ${body.token}`,
-        }),
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify(body),
     });
@@ -43,12 +40,11 @@ export async function poster({ url, body }) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'An error occurred whilse posting data');
+      throw new Error(data.error || 'An error occurred while posting data');
     }
 
     return data;
   } catch (error) {
-    // Preserve original error message or fallback
     throw new Error(error.message || 'Failed to make request');
   }
 }
