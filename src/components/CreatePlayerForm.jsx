@@ -16,6 +16,7 @@ const CreatePlayerForm = () => {
   const [playerClass, setPlayerClass] = useState('');
   const [team, setTeam] = useState('');
   const user = useAuthStore((state) => state.user);
+  const loginUser = useAuthStore((state) => state.login);
   const addPlayer = useAuthStore((state) => state.addPlayer);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -26,6 +27,7 @@ const CreatePlayerForm = () => {
       poster({
         url: '/players',
         body: newPlayer,
+        token: user.token,
       }),
     onSuccess: (data) => {
       // Update user document mutation
@@ -51,14 +53,21 @@ const CreatePlayerForm = () => {
       // Update local storage
       const updatedUser = {
         ...user,
-        players: [...(user.players || []), data._id],
+        players: [...(user.players || []), data.players[0]],
+        isAdmin: data.isAdmin,
       };
       saveLocal('user', updatedUser);
 
-      // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ['players'] });
+      // Log the user in with the updated user data
+      loginUser(updatedUser);
 
-      // Navigate to home
+      // Invalidate and refetch queries
+      queryClient.invalidateQueries({ queryKey: ['players'] });
+      queryClient.invalidateQueries({
+        queryKey: [`/players/${data._id}`, user.token],
+      });
+
+      // Navigate to home page
       navigate('/');
     },
   });
@@ -68,7 +77,7 @@ const CreatePlayerForm = () => {
 
     const newPlayer = {
       name,
-      userId: user.userId,
+      userId: '65df1acca34a41a5739908e2',
       icon: '',
       team: {
         teamName: team,
