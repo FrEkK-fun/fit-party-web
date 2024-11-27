@@ -1,167 +1,131 @@
-import { useState, useEffect } from "react";
-import { usePlayerContext } from "../hooks/usePlayerContext";
-import { useAuthContext } from "../hooks/useAuthContext";
-import backendURL from "../config";
+import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
+import UseAuthStore from '../store/authStore';
+import UsePlayerStore from '../store/playerStore';
+import { poster } from '../utils/http';
 
-const SessionForm = () => {
-	const { dispatch } = usePlayerContext();
-	const { user } = useAuthContext();
+import Button from './Button';
+import FormRadioButton from './FormRadioButton';
+import FormInput from './FormInput';
+import FormDatePicker from './FormDatePicker';
+import Notification from './Notification';
 
-	const [intensity, setIntensity] = useState(null);
-	const [title, setTitle] = useState("");
-	const [error, setError] = useState(null);
-	const [success, setSuccess] = useState(null);
+export default function SessionForm() {
+  const user = UseAuthStore((state) => state.user);
+  const player = UsePlayerStore((state) => state.player);
+  const setSession = UsePlayerStore((state) => state.addSession);
 
-	// State for the selected day of the week
-	const [selectedDay, setSelectedDay] = useState(getCurrentDay());
+  const [intensity, setIntensity] = useState(null);
+  const [title, setTitle] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [errMsg, setErrMsg] = useState('');
 
-	// Get the current day (0 = Monday, 1 = Tuesday, ..., 6 = Sunday)
-	function getCurrentDay() {
-		const currentDate = new Date();
-		let currentDay = currentDate.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-		if (currentDay === 0) {
-			currentDay = 6; // Convert Sunday to 6
-		} else {
-			currentDay -= 1; // Shift other days back by one
-		}
-		return currentDay;
-	}
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+    mutationFn: (data) =>
+      poster({
+        url: `/sessions/players/${player._id}/sessions`,
+        body: data.session,
+        token: data.token,
+      }),
+    onSuccess: (data) => {
+      setSession(data);
+      setTitle('');
+      setIntensity(null);
+      setDate('');
+    },
+  });
 
-	// Generate an array of days of the week starting from the current day
-	const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const session = {
+    intensity,
+    title,
+    timestamp: date,
+    syncTimestamp: null,
+  };
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-		if (!user) {
-			setError("You must be logged in to add a session");
-			return;
-		}
+    if (!user) {
+      setErrMsg('You must be logged in to add a session');
+      return;
+    }
 
-		if (!intensity) {
-			setError("You must set an intensity level");
-			return;
-		}
+    if (!intensity) {
+      setErrMsg('You must set an intensity level');
+      return;
+    }
 
-		// Get the selected day based on the index
-		const selectedDate = new Date();
-		selectedDate.setDate(
-			selectedDate.getDate() - (getCurrentDay() - selectedDay)
-		);
-
-		const session = {
-			intensity,
-			title,
-			timestamp: selectedDate,
-			syncTimestamp: null,
-		};
-
-		const res = await fetch(
-			`${backendURL}/api/sessions/players/${user.players[0]}/sessions`,
-			{
-				method: "POST",
-				body: JSON.stringify(session),
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${user.token}`,
-				},
-			}
-		);
-		const json = await res.json();
-
-		if (!res.ok) {
-			setError(json.error);
-		}
-		if (res.ok) {
-			setSuccess("Session added successfully!");
-			dispatch({ type: "ADD_SESSION", payload: json });
-			setError(null);
-			setIntensity(null);
-			setTitle("");
-		}
-	};
-
-	useEffect(() => {
-		if (success) {
-			const timeoutId = setTimeout(() => {
-				setSuccess(null);
-			}, 5000);
-
-			return () => clearTimeout(timeoutId);
-		}
-	}, [success]);
-
-	return (
-		<form onSubmit={handleSubmit}>
-			<h3>Add a new session</h3>
-
-			<div className="flex flex--spaceBetween margin--top">
-				<label className="hidden">Intensity:</label>
-
-				<div className="radioButton">
-					<input
-						type="radio"
-						id="Easy"
-						value="Easy"
-						checked={intensity === "Easy"}
-						onChange={() => setIntensity("Easy")}
-					/>
-					<label htmlFor="Easy">Easy</label>
-				</div>
-				<div className="radioButton">
-					<input
-						type="radio"
-						id="Medium"
-						value="Medium"
-						checked={intensity === "Medium"}
-						onChange={() => setIntensity("Medium")}
-					/>
-					<label htmlFor="Medium">Medium</label>
-				</div>
-				<div className="radioButton ">
-					<input
-						type="radio"
-						id="Hard"
-						value="Hard"
-						checked={intensity === "Hard"}
-						onChange={() => setIntensity("Hard")}
-					/>
-					<label htmlFor="Hard">Hard</label>
-				</div>
-			</div>
-			<label className="hidden">Title:</label>
-			<input
-				type="text"
-				onChange={(e) => setTitle(e.target.value)}
-				value={title}
-				placeholder="Title"
-			/>
-			{/* Day selection checkboxes */}
-			<div className="flex flex--wrap flex--spaceAround flex--1 margin--top">
-				{daysOfWeek.map((day, index) => (
-					<div key={index} className="radioButton">
-						<input
-							type="radio"
-							id={day}
-							value={day}
-							checked={selectedDay === index}
-							onChange={() => setSelectedDay(index)}
-							disabled={index > getCurrentDay()}
-						/>
-						<label
-							htmlFor={day}
-							className={index > getCurrentDay() ? "disabled" : ""}>
-							{day}
-						</label>
-					</div>
-				))}
-			</div>
-
-			<button>Add Session</button>
-			{error && <p className="error">{error}</p>}
-			{success && <p className="success">{success}</p>}
-		</form>
-	);
-};
-
-export default SessionForm;
+    const token = user.token;
+    await mutate({
+      session: {
+        intensity,
+        title,
+        timestamp: date,
+        syncTimestamp: null,
+      },
+      token: token,
+    });
+  };
+  return (
+    <div className="mx-auto max-h-fit w-full rounded-md border-border-primary bg-background-color-secondary px-4 py-8 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
+      <h2 className="text-header-primary text-center text-2xl font-bold sm:text-3xl dark:text-text-header-dark">
+        Log Your Workout Session
+      </h2>
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto mt-4 flex w-full flex-col gap-4 sm:w-3/4"
+      >
+        <div className="mx-auto mt-4 flex w-full flex-wrap justify-between gap-4">
+          <FormRadioButton
+            label="Intensity"
+            type="radio"
+            name="intensity"
+            value="Easy"
+            onChange={() => setIntensity('Easy')}
+          />
+          <FormRadioButton
+            label="Intensity"
+            type="radio"
+            name="intensity"
+            value="Medium"
+            onChange={() => setIntensity('Medium')}
+          />
+          <FormRadioButton
+            label="Intensity"
+            type="radio"
+            name="intensity"
+            value="Hard"
+            onChange={() => setIntensity('Hard')}
+          />
+        </div>
+        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+          <div className="xs:flex-grow xs:min-w-fit min-w-full">
+            <FormInput
+              label="Workout title"
+              hideLabel
+              placeholder="Workout title..."
+              type="text"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="xs:min-w-fit min-w-full flex-grow sm:flex-grow-0">
+            <FormDatePicker
+              label="Workout date"
+              type="date"
+              name="date"
+              value={date}
+              maxToday={true}
+              minThisWeek={true}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+        </div>
+        {errMsg && <Notification type="error">{errMsg}</Notification>}
+        {isError && <Notification type="error">{error.message}</Notification>}
+        <Button type="primary">Log Workout</Button>
+      </form>
+    </div>
+  );
+}
