@@ -8,9 +8,11 @@ import { loadLocal } from '../utils/localStorage';
 import { randomWelcome } from '../utils/welcomeMessages';
 
 import HeroSection from '../components/HeroSection';
+import SectionHeader from '../components/SectionHeader';
 import Notification from '../components/Notification';
 import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
+import StatBox from '../components/StatBox';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user) || loadLocal('user');
@@ -70,14 +72,51 @@ const Home = () => {
         {player && <SessionForm />}
       </section>
       {/* Quick stats */}
-      <section>
+      <section className="mb-12">
         <HeroSection
           title="Performance Overview"
           text="Essential insights summarized"
         />
+        <div className="mt-12 flex flex-col gap-24">
+          {/* Player, weekly stats */}
+          <div>
+            <SectionHeader
+              icon="chess-pawn"
+              title="Your Weekly Performance Achievements"
+              text="Stay motivated by tracking your personal stats! Here, you can focus solely on your progress. Celebrate your victories and identify areas for improvement."
+              linkText="View all your stats"
+              link="/"
+            />
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <StatBox title="Class" stat={player?.properties.class} />
+              <StatBox title="Weekly XP" stat={player?.weekly.xp} />
+              <StatBox title="Weekly Level" stat={player?.weekly.level} />
+            </div>
+          </div>
+          {/* Team, star inventory */}
+          <div>
+            <SectionHeader
+              icon="star"
+              title="Team Star Inventory"
+              text="Stay informed with essential stats showcasing all teams' performances. Our stats section offers a concise overview of crucial metrics that truly matter. Track your progress and inspire your teammates to achieve greater heights!"
+              linkText="View all team stats"
+              link="/"
+            />
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+              <StatBox team="blue" title="Team Blue Stars" stat="N/A" />
+              <StatBox team="red" title="Team Red Stars" stat="N/A" />
+              <StatBox team="yellow" title="Team Yellow Stars" stat="N/A" />
+            </div>
+          </div>
+        </div>
       </section>
       {/* Blog */}
-      <section></section>
+      <section>
+        <HeroSection
+          title="Latest Game Updates"
+          text="Stay updated with our latest blog posts"
+        />
+      </section>
     </>
   );
 };
