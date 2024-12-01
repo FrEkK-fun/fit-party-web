@@ -29,7 +29,7 @@ export default function SessionForm() {
         token: data.token,
       }),
     onSuccess: (data) => {
-      setSession(data);
+      setSession(data.session, data.weeklyXp, data.weeklyLevel);
       setTitle('');
       setIntensity(null);
       setHasLogged(true);
@@ -108,7 +108,7 @@ export default function SessionForm() {
               />
             </div>
             <div className="flex w-full flex-wrap items-center justify-between gap-4">
-              <div className="xs:flex-grow xs:min-w-fit min-w-full">
+              <div className="min-w-full xs:min-w-fit xs:flex-grow">
                 <FormInput
                   label="Workout title"
                   hideLabel
@@ -119,7 +119,7 @@ export default function SessionForm() {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
-              <div className="xs:min-w-fit min-w-full flex-grow sm:flex-grow-0">
+              <div className="min-w-full flex-grow xs:min-w-fit sm:flex-grow-0">
                 <FormDatePicker
                   label="Workout date"
                   type="date"
