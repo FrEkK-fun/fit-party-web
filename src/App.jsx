@@ -12,6 +12,7 @@ import RootLayout from './pages/RootLayout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import PlayersInsights from './pages/PlayersInsights';
 import Players from './pages/Players';
 import Player from './pages/Player';
 import Rules from './pages/Rules';
@@ -30,8 +31,12 @@ function App() {
           { path: 'login', element: <Login /> },
           { index: true, element: user ? <Home /> : <Navigate to="/login" /> },
           {
-            path: 'players',
-            element: user ? <Players /> : <Navigate to="/login" />,
+            path: 'teams',
+            element: user ? <PlayersInsights /> : <Navigate to="/login" />,
+          },
+          {
+            path: 'teams/:teamId',
+            element: user ? <Player /> : <Navigate to="/login" />,
           },
           {
             path: 'players/:playerId',
