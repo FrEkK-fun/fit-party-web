@@ -18,7 +18,7 @@ export default function SectionHeader({
           icon={byPrefixAndName.fas[`${icon}`]}
           className="text-3xl text-color-system-accent-pink"
         />
-        <h3 className="mt-2 text-3xl font-bold">{title}</h3>
+        <h3 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h3>
       </div>
       <div className="sm:w-1/2">
         {text && <p className="mb-6">{text}</p>}
