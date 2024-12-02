@@ -2,6 +2,11 @@
 export default {
   content: ['./src/**/*.{html,js,jsx}', './index.html', './public/index.html'],
   darkMode: 'selector',
+  safelist: [
+    'text-team-color-blue',
+    'text-team-color-red',
+    'text-team-color-yellow',
+  ],
   theme: {
     extend: {
       colors: {
