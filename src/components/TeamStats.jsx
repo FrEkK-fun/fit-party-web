@@ -8,7 +8,12 @@ export default function TeamStats({ team }) {
   const teamColor = team.teamName.toLowerCase();
 
   return (
-    <div className="flex flex-col gap-4 text-text-primary dark:text-text-primary-dark">
+    <div
+      className={[
+        'flex flex-col gap-4 border-l pl-4 text-text-primary sm:pl-6 dark:text-text-primary-dark',
+        `border-team-color-${teamColor}`,
+      ].join(' ')}
+    >
       <h2 className="text-2xl font-bold sm:text-3xl">
         <span>
           <FontAwesomeIcon
