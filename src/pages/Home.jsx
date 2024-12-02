@@ -13,6 +13,7 @@ import Notification from '../components/Notification';
 import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
 import StatBox from '../components/StatBox';
+import WeeklyGoal from '../components/WeeklyGoal';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user) || loadLocal('user');
@@ -53,32 +54,41 @@ const Home = () => {
 
   return (
     <>
-      {/* Info states */}
-      {isLoading && (
-        <div className="h-fit w-full">
-          <Notification type="info">Loading player data...</Notification>
-        </div>
-      )}
-      {isError && (
-        <div className="h-fit w-full">
-          <Notification type="error">Could not fetch player</Notification>
-        </div>
-      )}
-      {/* Logging */}
       <section>
+        {/* Info states */}
+        {isLoading && (
+          <div className="h-fit w-full">
+            <Notification type="info">Loading player data...</Notification>
+          </div>
+        )}
+        {isError && (
+          <div className="h-fit w-full">
+            <Notification type="error">Could not fetch player</Notification>
+          </div>
+        )}
+        {/* Logging */}
         {player && welcomeTitle && welcomeText && (
           <HeroSection title={welcomeTitle} text={welcomeText} h1="true" />
         )}
-        {player && <SessionForm />}
+        {player && (
+          <div className="flex flex-col gap-12">
+            <SessionForm />
+            <SectionHeader
+              icon="bullseye"
+              title="Weekly Goal"
+              component={() => <WeeklyGoal player={player} />}
+            />
+          </div>
+        )}
       </section>
-      {/* Quick stats */}
       <section className="mb-12">
+        {/* Quick stats */}
         <HeroSection
           title="Performance Overview"
           text="Essential insights summarized"
         />
+        {/* Player, weekly stats */}
         <div className="mt-12 flex flex-col gap-24">
-          {/* Player, weekly stats */}
           <div>
             <SectionHeader
               icon="chess-pawn"
