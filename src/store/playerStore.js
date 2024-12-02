@@ -24,6 +24,16 @@ const usePlayerStore = create((set) => ({
         ),
       },
     })),
+  changeGoal: (goal) =>
+    set((state) => ({
+      player: {
+        ...state.player,
+        weekly: {
+          ...state.player.weekly,
+          goal,
+        },
+      },
+    })),
   updatePlayer: (updatedPlayer) => set({ player: updatedPlayer }),
 }));
 
