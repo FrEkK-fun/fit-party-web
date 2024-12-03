@@ -12,7 +12,7 @@ export default function SectionHeader({
   link,
 }) {
   return (
-    <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
+    <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-start dark:text-text-primary-dark">
       <div className="sm:w-1/2">
         <FontAwesomeIcon
           icon={byPrefixAndName.fas[`${icon}`]}
@@ -20,7 +20,7 @@ export default function SectionHeader({
         />
         <h3 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h3>
       </div>
-      <div className="sm:w-1/2">
+      <div className="pt-10 sm:w-1/2">
         {text && <p className="mb-6">{text}</p>}
         {Component && <Component />}
         {linkText && link && (
