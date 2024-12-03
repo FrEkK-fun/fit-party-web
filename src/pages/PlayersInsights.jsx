@@ -5,6 +5,7 @@ import { fetcher } from '../utils/http';
 
 import LoadingSpinner from '../components/LoadingSpinner';
 import HeroSection from '../components/HeroSection';
+import SectionHeader from '../components/SectionHeader';
 import Notification from '../components/Notification';
 import TeamStats from '../components/TeamStats';
 
@@ -18,12 +19,6 @@ export default function PlayersInsights() {
     queryKey: ['/teams'],
     queryFn: fetcher,
   });
-
-  useEffect(() => {
-    if (teams) {
-      console.log(teams);
-    }
-  }, [teams]);
 
   return (
     <>
@@ -58,6 +53,17 @@ export default function PlayersInsights() {
           </div>
         </section>
       )}
+      {/* Top 3 players */}
+      <section className="my-24 flex flex-col gap-24">
+        <HeroSection title="Meet our Top 3 Players" subtitle="Heroes" />
+        <div className="-mt-24">
+          <SectionHeader
+            title="Absolute Legends"
+            icon="stars"
+            text="These are the players with the most sessions, XP and highest level in total."
+          />
+        </div>
+      </section>
     </>
   );
 }
