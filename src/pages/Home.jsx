@@ -112,7 +112,7 @@ const Home = () => {
                 title="Team Star Inventory"
                 text="Stay informed with essential stats showcasing all teams' performances. Our stats section offers a concise overview of crucial metrics that truly matter. Track your progress and inspire your teammates to achieve greater heights!"
                 linkText="View all team stats"
-                link="/"
+                link="teams"
               />
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <StatBox team="blue" title="Team Blue Stars" stat="N/A" />
