@@ -30,8 +30,6 @@ export default function WeeklyGoal({ player }) {
       done: !goalDone,
       description: goalDesc,
     });
-
-    console.log(playerContext);
   }
 
   async function handleSubmit(e) {
