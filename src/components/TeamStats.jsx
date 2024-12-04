@@ -125,7 +125,7 @@ export default function TeamStats({ team }) {
         </div>
       </div>
       {/* Players block */}
-      <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+      <div className="-ml-4 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 sm:-mt-4 sm:ml-0">
         {team.players.map((player) => (
           <PlayerQuickStatCard key={player._id} player={player} />
         ))}
