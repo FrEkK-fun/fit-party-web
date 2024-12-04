@@ -8,6 +8,7 @@ export default function SectionHeader({
   text,
   component: Component,
   icon,
+  h2,
   linkText,
   link,
 }) {
@@ -20,7 +21,10 @@ export default function SectionHeader({
             className="text-3xl text-color-system-accent-pink"
           />
         )}
-        <h3 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h3>
+        {!h2 && (
+          <h3 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h3>
+        )}
+        {h2 && <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h2>}
       </div>
       {text ||
         Component ||
