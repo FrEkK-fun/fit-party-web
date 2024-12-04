@@ -14,10 +14,12 @@ export default function SectionHeader({
   return (
     <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-start dark:text-text-primary-dark">
       <div className="sm:w-1/2">
-        <FontAwesomeIcon
-          icon={byPrefixAndName.fas[`${icon}`]}
-          className="text-3xl text-color-system-accent-pink"
-        />
+        {icon && (
+          <FontAwesomeIcon
+            icon={byPrefixAndName.fas[`${icon}`]}
+            className="text-3xl text-color-system-accent-pink"
+          />
+        )}
         <h3 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h3>
       </div>
       <div className="pt-10 sm:w-1/2">
