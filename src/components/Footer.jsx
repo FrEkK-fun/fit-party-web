@@ -3,6 +3,7 @@ import useAuthStore from '../store/authStore';
 
 export default function Footer() {
   const user = useAuthStore((state) => state.user);
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="mx-auto my-12 flex w-full max-w-[1536px] flex-col items-center justify-center gap-12 px-4 text-text-primary dark:text-text-primary-dark">
@@ -37,8 +38,9 @@ export default function Footer() {
           </ul>
         </nav>
         <p className="mt-6 text-center text-text-primary sm:mt-0 sm:text-left dark:text-text-primary-dark">
-          &copy; 2022 FrEkK Fit Party.{' '}
-          <span className="block sm:inline"> All Rights Reserved</span>
+          <span className="mr-2">&copy;</span>
+          {`${currentYear} FrEkK Fit Party.`}
+          <span className="block sm:ml-2 sm:inline">All Rights Reserved.</span>
         </p>
       </div>
     </footer>
