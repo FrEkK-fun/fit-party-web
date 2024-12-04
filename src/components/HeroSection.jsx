@@ -1,6 +1,18 @@
-export default function HeroSection({ title, subtitle, text, h1, ...props }) {
-  const titleStyle =
-    'text-4xl font-bold text-text-header sm:text-5xl dark:text-text-header-dark';
+export default function HeroSection({
+  title,
+  subtitle,
+  text,
+  sm,
+  h1,
+  ...props
+}) {
+  let titleStyle = 'font-bold text-text-header dark:text-text-header-dark';
+
+  if (sm) {
+    titleStyle += ' sm:text-3xl text-2xl';
+  } else {
+    titleStyle += ' sm:text-5xl text-4xl';
+  }
 
   return (
     <div
@@ -10,7 +22,7 @@ export default function HeroSection({ title, subtitle, text, h1, ...props }) {
       {subtitle && <p>{subtitle}</p>}
       {h1 && <h1 className={titleStyle}>{title}</h1>}
       {!h1 && <h2 className={titleStyle}>{title}</h2>}
-      <p className="text-center">{text}</p>
+      {text && <p className="text-center">{text}</p>}
     </div>
   );
 }
