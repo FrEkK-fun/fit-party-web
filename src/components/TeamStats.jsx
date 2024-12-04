@@ -54,7 +54,7 @@ export default function TeamStats({ team }) {
           {team.players.length === 1 ? 'Player' : 'Players'}
         </p>
         {/* Workout stats */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2">
           {/* XP */}
           <p>
             <span>
@@ -90,7 +90,7 @@ export default function TeamStats({ team }) {
           </p>
         </div>
         {/* Inventory */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 xs:grid-cols-2">
           {/* Stars */}
           <div className="flex items-center gap-2">
             <img src="/img/StarIcon.png" alt="Star" className="mr-1 h-6 w-6" />
