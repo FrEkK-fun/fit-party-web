@@ -45,25 +45,28 @@ export default function PlayersInsights() {
       </section>
       {/* Team stats */}
       {teams && (
-        <section>
-          <div className="flex flex-col gap-24">
-            {teams.map((team) => (
-              <TeamStats key={team._id} team={team} />
-            ))}
-          </div>
-        </section>
+        <>
+          <section>
+            <div className="flex flex-col gap-24">
+              {teams.map((team) => (
+                <TeamStats key={team._id} team={team} />
+              ))}
+            </div>
+          </section>
+
+          {/* Top 3 players */}
+          <section className="my-24 flex flex-col gap-24">
+            <HeroSection title="Meet our Top 3 Players" subtitle="Heroes" />
+            <div className="-mt-24">
+              <SectionHeader
+                title="Absolute Legends"
+                icon="stars"
+                text="These are the players with the most sessions, XP and highest level in total."
+              />
+            </div>
+          </section>
+        </>
       )}
-      {/* Top 3 players */}
-      <section className="my-24 flex flex-col gap-24">
-        <HeroSection title="Meet our Top 3 Players" subtitle="Heroes" />
-        <div className="-mt-24">
-          <SectionHeader
-            title="Absolute Legends"
-            icon="stars"
-            text="These are the players with the most sessions, XP and highest level in total."
-          />
-        </div>
-      </section>
     </>
   );
 }

@@ -14,7 +14,7 @@ export default function GameCard({ card }) {
         <span>
           <FontAwesomeIcon
             icon={byPrefixAndName.fas[`money-bill-wave`]}
-            className={'dark:text-highlight-dark mr-1 text-text-highlight'}
+            className={'mr-1 text-color-system-accent-pink-dark'}
           />
         </span>
         {card.cost} AP

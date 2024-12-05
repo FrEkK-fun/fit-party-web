@@ -85,7 +85,7 @@ export default function Team() {
               icon="calendar-days"
               h2="true"
             />
-            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+            <div className="mt-6 flex flex-wrap gap-4 sm:mt-12 sm:gap-24">
               <StatBox
                 title="Sessions"
                 stat={data.players.reduce((acc, player) => {
@@ -135,6 +135,10 @@ export default function Team() {
                 <GameCard key={card._id} card={card} />
               ))}
             </div>
+          </section>
+          {/* Armory */}
+          <section>
+            <HeroSection title="Armory" sm="true" />
           </section>
           {/* Team Members */}
           <section>
