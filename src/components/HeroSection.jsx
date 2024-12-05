@@ -17,7 +17,7 @@ export default function HeroSection({
   return (
     <div
       {...props}
-      className="mx-auto flex w-full flex-col gap-4 px-0 py-12 text-center text-text-primary sm:px-6 sm:py-24 dark:text-text-primary-dark"
+      className="mx-auto flex w-full flex-col gap-2 px-0 py-6 text-center text-text-primary sm:px-6 sm:py-12 dark:text-text-primary-dark"
     >
       {subtitle && <p>{subtitle}</p>}
       {h1 && <h1 className={titleStyle}>{title}</h1>}

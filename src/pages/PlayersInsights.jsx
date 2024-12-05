@@ -46,7 +46,7 @@ export default function PlayersInsights() {
       {/* Team stats */}
       {teams && (
         <>
-          <section>
+          <section className="mt-12">
             <div className="flex flex-col gap-24">
               {teams.map((team) => (
                 <TeamStats key={team._id} team={team} />

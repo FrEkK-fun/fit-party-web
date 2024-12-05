@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import useAuthStore from '../store/authStore';
 import usePlayerStore from '../store/playerStore';
@@ -67,23 +69,32 @@ const Home = () => {
             <Notification type="error">Could not fetch player</Notification>
           </div>
         )}
-        {/* Logging */}
+        {/* Logging & Goal */}
         {player && welcomeTitle && welcomeText && (
           <HeroSection title={welcomeTitle} text={welcomeText} h1="true" />
         )}
         {player && (
           <div className="flex flex-col gap-12">
             <SessionForm />
-            <SectionHeader
-              icon="bullseye"
-              title="Weekly Goal"
-              component={() => <WeeklyGoal player={player} />}
-            />
+            <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
+              <div className="sm:w-1/2">
+                <FontAwesomeIcon
+                  icon={byPrefixAndName.fas[`bullseye`]}
+                  className="text-3xl text-color-system-accent-pink"
+                />
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl">
+                  Weekly Goal
+                </h3>
+              </div>
+              <div className="sm:w-1/2">
+                <WeeklyGoal player={player} />
+              </div>
+            </div>
           </div>
         )}
       </section>
       {player && (
-        <section className="mb-12">
+        <section className="my-24">
           {/* Quick stats */}
           <HeroSection
             title="Performance Overview"

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import { fetcher } from '../utils/http';
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
@@ -13,11 +15,13 @@ import StatBox from '../components/StatBox';
 import InventoryBox from '../components/InventoryBox';
 import GameCard from '../components/GameCard';
 import PlayerQuickStatCard from '../components/PlayerQuickStatCard';
+import GameArmory from '../components/GameArmory';
 
 export default function Team() {
   const { teamId } = useParams();
   const [teamName, setTeamName] = useState('');
   const [teamIcon, setTeamIcon] = useState('');
+  const [teamArmory, setTeamArmory] = useState(false);
 
   // Fetch team data
   const { data, isLoading, isError } = useQuery({
@@ -27,8 +31,6 @@ export default function Team() {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-
       setTeamName(data.teamName);
     }
 
@@ -38,6 +40,15 @@ export default function Team() {
 
     if (data && !data.icon) {
       setTeamIcon(`/img/Team${data.teamName}Icon.png`);
+    }
+
+    if (data) {
+      if (data.inventory.armors.length > 0) {
+        setTeamArmory(true);
+      }
+      if (data.inventory.weapons.length > 0) {
+        setTeamArmory(true);
+      }
     }
   }, [data]);
 
@@ -80,30 +91,45 @@ export default function Team() {
         <div className="flex flex-col gap-12">
           {/* Weekly stats */}
           <section>
-            <SectionHeader
-              title="Weekly Stats"
-              icon="calendar-days"
-              h2="true"
-            />
-            <div className="mt-6 flex flex-wrap gap-4 sm:mt-12 sm:gap-24">
-              <StatBox
-                title="Sessions"
-                stat={data.players.reduce((acc, player) => {
-                  const playerSessions = playerWeeklySessions(player);
-                  return acc + playerSessions.length;
-                }, 0)}
-              />
-              <StatBox
-                title="XP"
-                stat={data.players.reduce((acc, player) => {
-                  return acc + player.weekly.xp;
-                }, 0)}
-              />
+            <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
+              <div className="flex flex-col items-start gap-2 sm:w-1/2">
+                <FontAwesomeIcon
+                  icon={byPrefixAndName.fas[`calendar-days`]}
+                  className="text-3xl text-color-system-accent-pink"
+                />
+                <h2 className="text-2xl font-bold sm:text-3xl">Weekly Stats</h2>
+                <p>
+                  This section presents the weekly statistics, showcasing the
+                  performance of the team over the past week.
+                </p>
+              </div>
+              <div className="sm:w-1/2">
+                <div className="grid grid-cols-2 gap-6">
+                  <StatBox
+                    title="Sessions"
+                    stat={data.players.reduce((acc, player) => {
+                      const playerSessions = playerWeeklySessions(player);
+                      return acc + playerSessions.length;
+                    }, 0)}
+                  />
+                  <StatBox
+                    title="XP"
+                    stat={data.players.reduce((acc, player) => {
+                      return acc + player.weekly.xp;
+                    }, 0)}
+                  />
+                  <StatBox title="Level" stat="N/A" />
+                </div>
+              </div>
             </div>
           </section>
           {/* Inventory */}
           <section>
-            <HeroSection title="Resources" sm="true" />
+            <HeroSection
+              title="Resources"
+              sm="true"
+              text="Purchase and building power"
+            />
             <div className="grid grid-cols-2 gap-4 xs:grid-cols-4">
               <InventoryBox
                 title="Stars"
@@ -129,30 +155,89 @@ export default function Team() {
           </section>
           {/* Cards */}
           <section>
-            <HeroSection title="Game Cards" sm="true" />
-            <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 overflow-hidden">
-              {data.inventory.cards.map((card) => (
-                <GameCard key={card._id} card={card} />
-              ))}
-            </div>
+            <HeroSection
+              title="Game Cards"
+              sm="true"
+              text="Trickery and power-ups"
+            />
+            {data.inventory.cards.length === 0 && (
+              <div className="-my-6 sm:-my-12">
+                <Notification>Team {data.teamName} has no cards!</Notification>
+              </div>
+            )}
+            {data.inventory.cards.length > 0 && (
+              <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-12 overflow-hidden xs:gap-4">
+                {data.inventory.cards.map((card) => (
+                  <GameCard key={card._id} card={card} />
+                ))}
+              </div>
+            )}
           </section>
           {/* Armory */}
           <section>
-            <HeroSection title="Armory" sm="true" />
+            <HeroSection title="Armory" sm="true" text="Weapons and defense" />
+            {!teamArmory && (
+              <div className="-my-6 sm:-my-12">
+                <Notification>
+                  Team {data.teamName} has no items in their armory!
+                </Notification>
+              </div>
+            )}
+            {teamArmory && (
+              <div className="grid w-full grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-12 overflow-hidden xs:gap-4">
+                {data.inventory.armors.map((armor) => (
+                  <GameArmory key={armor._id} item={armor} />
+                ))}
+                {data.inventory.weapons.map((weapon) => (
+                  <GameArmory key={weapon._id} item={weapon} />
+                ))}
+              </div>
+            )}
+          </section>
+          {/* Total Team Stats */}
+          <section>
+            <div className="mt-12 flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
+              <div className="flex flex-col items-start gap-2 sm:w-1/2">
+                <FontAwesomeIcon
+                  icon={byPrefixAndName.fas[`signal-bars-good`]}
+                  className="text-3xl text-color-system-accent-pink"
+                />
+                <h2 className="text-2xl font-bold sm:text-3xl">
+                  Total Team Stats
+                </h2>
+                <p>
+                  This section presents the overall statistics, showcasing
+                  cumulative data that highlights performance over time.
+                </p>
+              </div>
+              <div className="sm:w-1/2">
+                <div className="grid grid-cols-2 gap-6">
+                  <StatBox
+                    title="Sessions"
+                    stat={data.players.reduce((acc, player) => {
+                      return acc + player.sessions.length;
+                    }, 0)}
+                  />
+                  <StatBox title="XP" stat="N/A" />
+                  <StatBox title="Attack strength" stat="N/A" />
+                  <StatBox title="Defense strength" stat="N/A" />
+                </div>
+              </div>
+            </div>
           </section>
           {/* Team Members */}
-          <section>
+          <section className="mb-24">
             <HeroSection
               title="Team Members"
               sm="true"
               subtitle={`Team ${data.teamName}`}
             />
+            <div className="-my-6 mb-24 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 sm:-my-12">
+              {data.players.map((player) => (
+                <PlayerQuickStatCard key={player._id} player={player} />
+              ))}
+            </div>
           </section>
-          <div className="-mt-24 mb-24 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
-            {data.players.map((player) => (
-              <PlayerQuickStatCard key={player._id} player={player} />
-            ))}
-          </div>
         </div>
       )}
     </>
