@@ -13,7 +13,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import PlayersInsights from './pages/PlayersInsights';
-import Players from './pages/Players';
+import Team from './pages/Team';
 import Player from './pages/Player';
 import Rules from './pages/Rules';
 import Blog from './pages/Blog';
@@ -36,7 +36,7 @@ function App() {
           },
           {
             path: 'teams/:teamId',
-            element: user ? <Player /> : <Navigate to="/login" />,
+            element: user ? <Team /> : <Navigate to="/login" />,
           },
           {
             path: 'players/:playerId',

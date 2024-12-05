@@ -5,7 +5,6 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
 
 import PlayerQuickStatCard from './PlayerQuickStatCard';
-import SectionHeader from './SectionHeader';
 
 export default function TeamStats({ team }) {
   const teamColor = team.teamName.toLowerCase();
