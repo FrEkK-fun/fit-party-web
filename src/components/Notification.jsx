@@ -7,6 +7,8 @@ export default function Notification({ type, children, ...props }) {
   if (type === 'error') {
     styles +=
       ' border border-border-error dark:border-border-error-dark text-text-error dark:text-text-error-dark bg-background-color-error dark:bg-background-color-error-dark';
+  } else {
+    styles += ' border text-text-primary dark:text-text-primary-dark ';
   }
 
   return (
