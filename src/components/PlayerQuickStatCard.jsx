@@ -45,7 +45,7 @@ export default function PlayerQuickStatCard({ player }) {
       to={`/players/${player._id}`}
       className="max-h-fit min-w-fit rounded-md p-4 hover:dark:bg-background-color-secondary-dark"
     >
-      <div className="flex gap-4">
+      <div className="flex gap-4 text-text-primary dark:text-text-primary-dark">
         {player.icon ? (
           <img
             src={player.icon}
@@ -68,7 +68,7 @@ export default function PlayerQuickStatCard({ player }) {
           </div>
         </div>
       </div>
-      <div className="mt-4 flex flex-col gap-1">
+      <div className="mt-4 flex flex-col gap-1 text-text-primary dark:text-text-primary-dark">
         <div className="flex items-center gap-1 font-medium">
           <p className="min-w-fit">
             {weeklySessions.length}{' '}
