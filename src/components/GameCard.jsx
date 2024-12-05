@@ -9,7 +9,7 @@ export default function GameCard({ card }) {
         alt={card.title}
         className="mx-auto w-48 min-w-40 sm:w-52"
       />
-      <h3 className="min-w-fit font-semibold">{card.title}</h3>
+      <h3 className="min-w-fit text-lg font-semibold">{card.title}</h3>
       <p>
         <span>
           <FontAwesomeIcon
