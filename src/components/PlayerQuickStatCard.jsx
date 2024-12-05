@@ -4,20 +4,10 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
 
+import PlayerClassAndIcon from './PlayerClassAndIcon';
+
 export default function PlayerQuickStatCard({ player }) {
   const weeklySessions = playerWeeklySessions(player);
-
-  const playerClass = player.properties.class.toLowerCase();
-  let classIcon;
-  if (playerClass === 'defender') {
-    classIcon = 'shield';
-  }
-  if (playerClass === 'fighter') {
-    classIcon = 'hand-fist';
-  }
-  if (playerClass === 'explorer') {
-    classIcon = 'binoculars';
-  }
 
   let goalDesc;
   if (player.weekly.goal.description) {
@@ -60,12 +50,7 @@ export default function PlayerQuickStatCard({ player }) {
         )}
         <div className="flex flex-col gap-1">
           <h3 className="font-semibold">{player.name}</h3>
-          <div className="flex items-center gap-2">
-            <FontAwesomeIcon icon={byPrefixAndName.fas[classIcon]} />
-            <p className="text-text-highlight dark:text-text-highlight-dark">
-              {player.properties.class}
-            </p>
-          </div>
+          <PlayerClassAndIcon player={player} />
         </div>
       </div>
       <div className="mt-4 flex flex-col gap-1 text-text-primary dark:text-text-primary-dark">
