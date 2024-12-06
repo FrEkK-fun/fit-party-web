@@ -6,7 +6,6 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 export default function SectionHeader({
   title,
   text,
-  component: Component,
   icon,
   h2,
   linkText,
@@ -27,12 +26,10 @@ export default function SectionHeader({
         {h2 && <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h2>}
       </div>
       {text ||
-        Component ||
         linkText ||
         (link && (
           <div className="pt-10 sm:w-1/2">
             {text && <p className="mb-6">{text}</p>}
-            {Component && <Component />}
             {linkText && link && (
               <Link
                 to={link}
