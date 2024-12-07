@@ -17,7 +17,6 @@ export default function Button({ type, wFull, children, ...props }) {
     baseStyle += ' w-auto';
   }
 
-  // In your component:
   let style = `${baseStyle} ${buttonStyles[type] || buttonStyles.primary}`;
 
   return (
