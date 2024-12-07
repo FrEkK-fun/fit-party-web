@@ -15,8 +15,8 @@ import SectionHeader from '../components/SectionHeader';
 import Notification from '../components/Notification';
 import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
-import StatBox from '../components/StatBox';
 import WeeklyGoal from '../components/WeeklyGoal';
+import StatBox from '../components/StatBox';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user) || loadLocal('user');
