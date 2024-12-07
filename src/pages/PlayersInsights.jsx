@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 import { fetcher } from '../utils/http';
 
@@ -14,7 +13,6 @@ export default function PlayersInsights() {
     data: teams,
     isLoading,
     isError,
-    error,
   } = useQuery({
     queryKey: ['/teams'],
     queryFn: fetcher,
