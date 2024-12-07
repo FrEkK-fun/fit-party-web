@@ -9,7 +9,6 @@ import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
 
 import LoadingSpinner from '../components/LoadingSpinner';
 import Notification from '../components/Notification';
-import SectionHeader from '../components/SectionHeader';
 import HeroSection from '../components/HeroSection';
 import StatBox from '../components/StatBox';
 import InventoryBox from '../components/InventoryBox';
