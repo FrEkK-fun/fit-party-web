@@ -231,7 +231,7 @@ export default function Team() {
               sm="true"
               subtitle={`Team ${data.teamName}`}
             />
-            <div className="-my-6 mb-24 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4 sm:-my-12">
+            <div className="mb-24 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
               {data.players.map((player) => (
                 <PlayerQuickStatCard key={player._id} player={player} />
               ))}
