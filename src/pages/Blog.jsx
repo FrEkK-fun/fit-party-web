@@ -1,133 +1,49 @@
-import ReactMarkdown from "react-markdown";
-import { useEffect, useState } from "react";
-import backendURL from "../config";
-import { useAuthContext } from "../hooks/useAuthContext";
-import useBlogContext from "../hooks/useBlogContext";
-// Components
-import CreateBlogForm from "../components/CreateBlogForm";
-import YoutubeEmbed from "../components/YoutubeEmbed";
-import EditBlogForm from "../components/EditBlogPost";
+import { useQuery } from '@tanstack/react-query';
 
-const Blog = () => {
-	const { blogs, dispatch } = useBlogContext();
-	const [editingBlog, setEditingBlog] = useState(null);
-	const [expandedBlogId, setExpandedBlogId] = useState(null);
-	const { user } = useAuthContext();
+import { fetcher } from '../utils/http';
+import useAuthStore from '../store/authStore';
 
-	// GET request
-	useEffect(() => {
-		const fetchBlogs = async () => {
-			const res = await fetch(`${backendURL}/api/blogs`);
-			const json = await res.json();
+import LoadingSpinner from '../components/LoadingSpinner';
+import HeroSection from '../components/HeroSection';
+import Notification from '../components/Notification';
+import BlogPost from '../components/BlogPost';
 
-			if (res.ok) {
-				// Reverse the blogs before dispatching the action
-				const reversedBlogs = json.reverse();
-				dispatch({ type: "SET_BLOGS", payload: reversedBlogs });
+export default function Blog() {
+  const user = useAuthStore((state) => state.user);
 
-				// Expand the first blog
-				if (json.length > 0) {
-					setExpandedBlogId(json[json.length - 1]._id);
-				}
-			}
-		};
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['/blogs'],
+    queryFn: fetcher,
+  });
 
-		fetchBlogs();
-	}, []);
-
-	// DELETE request
-	const handleDelete = async (id) => {
-		const res = await fetch(`${backendURL}/api/blogs/${id}`, {
-			method: "DELETE",
-		});
-		const json = await res.json();
-
-		if (res.ok) {
-			dispatch({ type: "DELETE_BLOG", payload: id });
-		}
-	};
-
-	// EDIT a post
-	const handleEdit = (id) => {
-		const blogToEdit = blogs.find((blog) => blog._id === id);
-		setEditingBlog(blogToEdit);
-	};
-
-	const addBlog = (newBlog) => {
-		dispatch({ type: "ADD_BLOG", payload: newBlog });
-	};
-
-	const handleEditComplete = (updatedBlog) => {
-		setEditingBlog(null);
-		dispatch({ type: "UPDATE_BLOG", payload: updatedBlog });
-	};
-
-	return (
-		<main>
-			<h2>Blog</h2>
-			{user.isAdmin && <CreateBlogForm addBlog={addBlog} />}
-
-			{editingBlog && (
-				<EditBlogForm blog={editingBlog} onEdit={handleEditComplete} />
-			)}
-
-			{blogs &&
-				blogs
-					.slice()
-					.reverse()
-					.map((blog) => (
-						<div key={blog._id} className="blogCard">
-							<div
-								className="flex flex--spaceBetween flex--center flex--wrap"
-								id={blog._id}
-								onClick={() => setExpandedBlogId(blog._id)}>
-								<h2 className="blogTitle">{blog.title}</h2>
-								{user.isAdmin && (
-									<div className="flex">
-										<button
-											onClick={(e) => {
-												e.stopPropagation();
-												handleEdit(blog._id);
-											}}>
-											Edit
-										</button>
-										<button
-											className="btnDelete"
-											onClick={(e) => {
-												e.stopPropagation();
-												handleDelete(blog._id);
-											}}>
-											Delete
-										</button>
-									</div>
-								)}
-							</div>
-
-							{expandedBlogId === blog._id && (
-								<>
-									<p>
-										<i>
-											{new Date(blog.updatedAt).toLocaleString("en-US", {
-												year: "numeric",
-												month: "long",
-												day: "numeric",
-											})}
-										</i>
-									</p>
-									<ReactMarkdown className={"blogBody"}>
-										{blog.body}
-									</ReactMarkdown>
-
-									{blog.videoLink && (
-										<h4 className="margin--top">Game replay</h4>
-									)}
-									{blog.videoLink && <YoutubeEmbed embedId={blog.videoLink} />}
-								</>
-							)}
-						</div>
-					))}
-		</main>
-	);
-};
-
-export default Blog;
+  return (
+    <>
+      {/* Info states */}
+      <section>
+        {isLoading && (
+          <div className="mt-24 flex h-fit justify-center">
+            <LoadingSpinner />
+          </div>
+        )}
+        {isError && (
+          <div className="mt-6 h-fit w-full">
+            <Notification type="error">Could not fetch blog data</Notification>
+          </div>
+        )}
+        {/* Hero title */}
+        {data && (
+          <HeroSection
+            title="Fit Blog"
+            h1="true"
+            text="Keep up to date on the latest fitness party news!"
+          />
+        )}
+      </section>
+      {data && (
+        <section className="text-text-primary dark:text-text-primary-dark">
+          <BlogPost post={data[0]} />
+        </section>
+      )}
+    </>
+  );
+}
