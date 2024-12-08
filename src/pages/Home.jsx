@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
@@ -17,6 +18,7 @@ import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
 import WeeklyGoal from '../components/WeeklyGoal';
 import StatBox from '../components/StatBox';
+import BlogPost from '../components/BlogPost';
 
 const Home = () => {
   const user = useAuthStore((state) => state.user) || loadLocal('user');
@@ -32,6 +34,16 @@ const Home = () => {
     queryKey: [`/players/${playerId}`, user.token],
     queryFn: fetcher,
     enabled: !!playerId, // Only fetch if playerId is available
+  });
+
+  // Fetch Blog
+  const {
+    data: blogData,
+    isLoading: blogIsLoading,
+    isError: blogIsError,
+  } = useQuery({
+    queryKey: ['/blogs'],
+    queryFn: fetcher,
   });
 
   // Set player data in store and generate welcome message
@@ -135,12 +147,25 @@ const Home = () => {
         </section>
       )}
       {/* Blog */}
-      {player && (
-        <section>
+      {player && blogData && (
+        <section className="mb-12 flex flex-col items-center gap-6">
           <HeroSection
             title="Latest Game Updates"
-            text="Stay updated with our latest blog posts"
+            text="Stay updated with the latest post from the blog"
           />
+          <BlogPost post={blogData[0]} />
+          <Link
+            to={`/blog`}
+            className="text-sm text-link-primary hover:underline dark:text-link-primary-dark"
+          >
+            View All Blog Posts
+            <span>
+              <FontAwesomeIcon
+                icon={byPrefixAndName.fas[`chevron-right`]}
+                className="ml-2 text-xs text-link-secondary dark:text-link-secondary-dark"
+              />
+            </span>
+          </Link>
         </section>
       )}
     </>
