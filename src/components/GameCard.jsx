@@ -3,7 +3,7 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 export default function GameCard({ card }) {
   return (
-    <div className="flex flex-col gap-2 text-center text-text-primary dark:text-text-primary-dark">
+    <div className="flex flex-col gap-2 rounded-md p-4 text-center text-text-primary hover:bg-background-color-secondary dark:text-text-primary-dark hover:dark:bg-background-color-secondary-dark">
       <img
         src={card.icon ? card.icon : '/img/CardIcon.png'}
         alt={card.title}
