@@ -19,13 +19,15 @@ export default function BlogPost({ post }) {
 
   return (
     <article className="flex w-full flex-col border-b border-border-primary pb-12 dark:border-border-primary-dark">
-      <h2 className="mb-6 text-3xl font-bold">{post.title}</h2>
+      <h2 className="mb-6 text-3xl font-bold text-text-primary dark:text-text-primary-dark">
+        {post.title}
+      </h2>
       <YoutubeEmbed embedId={post.videoLink} />
-      <p className="mt-4 text-sm font-semibold">
+      <p className="mt-4 text-sm font-semibold text-text-primary dark:text-text-primary-dark">
         <span className="block font-normal">Published on</span>
         {timestamp}
       </p>
-      <div className="prose mx-auto mt-6 max-w-[65ch]">
+      <div className="prose mx-auto mt-6 max-w-[65ch] text-text-primary dark:text-text-primary-dark">
         <Markdown
           options={{
             overrides: {
