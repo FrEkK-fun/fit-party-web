@@ -62,7 +62,9 @@ export default function Player() {
         )}
         {isError && (
           <div className="mt-6 h-fit w-full">
-            <Notification type="error">Could not fetch team data</Notification>
+            <Notification type="error">
+              Could not fetch player data
+            </Notification>
           </div>
         )}
         {/* Hero title */}
