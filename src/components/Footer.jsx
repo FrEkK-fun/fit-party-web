@@ -13,7 +13,7 @@ export default function Footer() {
           <nav>
             <ul className="flex flex-col gap-4 text-center sm:flex-row">
               <li className="text-link-primary hover:underline dark:text-link-primary-dark">
-                <Link to="/teams">Player Insights</Link>
+                <Link to="/insights">Player Insights</Link>
               </li>
               <li className="text-link-primary hover:underline dark:text-link-primary-dark">
                 <Link to="/blog">Blog</Link>
