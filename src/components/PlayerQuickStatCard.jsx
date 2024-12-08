@@ -13,7 +13,7 @@ export default function PlayerQuickStatCard({ player }) {
   return (
     <Link
       to={`/players/${player._id}`}
-      className="max-h-fit min-w-fit rounded-md p-4 hover:dark:bg-background-color-secondary-dark"
+      className="max-h-fit min-w-fit rounded-md p-4 hover:bg-background-color-secondary hover:dark:bg-background-color-secondary-dark"
     >
       <div className="flex gap-4 text-text-primary dark:text-text-primary-dark">
         {player.icon ? (
