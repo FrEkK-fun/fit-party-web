@@ -81,8 +81,8 @@ const Navbar = () => {
                   />
                   <MainNavLink
                     onClick={handleNavLinkClick}
-                    route="/teams"
-                    title="Player Insights"
+                    route="/insights"
+                    title="Insights"
                   />
                   <MainNavLink
                     onClick={handleNavLinkClick}

@@ -31,7 +31,7 @@ export default function TeamStats({ team }) {
           Team {team.teamName}
         </h2>
         <Link
-          to={`/teams/${team._id}`}
+          to={`/insights/teams/${team._id}`}
           className="text-sm text-link-primary hover:underline dark:text-link-primary-dark"
         >
           View Team Page

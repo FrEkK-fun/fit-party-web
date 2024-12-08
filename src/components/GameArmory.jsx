@@ -58,7 +58,10 @@ export default function GameArmory({ item }) {
       {owner && (
         <div className="flex flex-col items-center justify-center gap-2">
           <p className="">Equipped to</p>
-          <Link to={`/players/${owner._id}`} className="hover:underline">
+          <Link
+            to={`/insights/players/${owner._id}`}
+            className="hover:underline"
+          >
             <p className="-mb-2 font-semibold">{owner.name}</p>
           </Link>
           <PlayerClassAndIcon player={owner} />

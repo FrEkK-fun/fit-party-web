@@ -31,15 +31,15 @@ function App() {
           { path: 'login', element: <Login /> },
           { index: true, element: user ? <Home /> : <Navigate to="/login" /> },
           {
-            path: 'teams',
+            path: 'insights',
             element: user ? <PlayersInsights /> : <Navigate to="/login" />,
           },
           {
-            path: 'teams/:teamId',
+            path: 'insights/teams/:teamId',
             element: user ? <Team /> : <Navigate to="/login" />,
           },
           {
-            path: 'players/:playerId',
+            path: 'insights/players/:playerId',
             element: user ? <Player /> : <Navigate to="/login" />,
           },
           {

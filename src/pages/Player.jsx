@@ -116,7 +116,7 @@ export default function Player() {
                   <StatBox title="Stars" stat={team.inventory.stars} />
                 </div>
                 <Link
-                  to={`/teams/${team._id}`}
+                  to={`/insights/teams/${team._id}`}
                   className="mt-4 text-sm text-link-primary hover:underline dark:text-link-primary-dark"
                 >
                   View Team Page
