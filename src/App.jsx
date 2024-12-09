@@ -17,6 +17,7 @@ import Team from './pages/Team';
 import Player from './pages/Player';
 import Rules from './pages/Rules';
 import Blog from './pages/Blog';
+import BlogPostDetails from './pages/BlogPost';
 
 function App() {
   const user = useAuthStore((state) => state.user);
@@ -47,6 +48,10 @@ function App() {
             element: user ? <Rules /> : <Navigate to="/login" />,
           },
           { path: 'blog', element: user ? <Blog /> : <Navigate to="/login" /> },
+          {
+            path: 'blog/:postId',
+            element: user ? <BlogPostDetails /> : <Navigate to="/login" />,
+          },
         ],
       },
     ],
