@@ -36,12 +36,14 @@ const Home = () => {
     enabled: !!playerId, // Only fetch if playerId is available
   });
 
+  // Fetch teams data
+  const { data: teamsData } = useQuery({
+    queryKey: ['/teams'],
+    queryFn: fetcher,
+  });
+
   // Fetch Blog
-  const {
-    data: blogData,
-    isLoading: blogIsLoading,
-    isError: blogIsError,
-  } = useQuery({
+  const { data: blogData } = useQuery({
     queryKey: ['/blogs'],
     queryFn: fetcher,
   });
@@ -50,6 +52,10 @@ const Home = () => {
   useEffect(() => {
     if (data) {
       setPlayer(data);
+    }
+
+    if (teamsData) {
+      console.log(teamsData);
     }
   }, [data, setPlayer]);
 
@@ -105,7 +111,7 @@ const Home = () => {
           </div>
         )}
       </section>
-      {player && (
+      {player && teamsData && (
         <section className="my-24">
           {/* Quick stats */}
           <HeroSection
@@ -138,9 +144,14 @@ const Home = () => {
                 link="teams"
               />
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-                <StatBox team="blue" title="Team Blue Stars" stat="N/A" />
-                <StatBox team="red" title="Team Red Stars" stat="N/A" />
-                <StatBox team="yellow" title="Team Yellow Stars" stat="N/A" />
+                {teamsData.map((team) => (
+                  <StatBox
+                    key={team._id}
+                    team={team.teamName.toLowerCase()}
+                    title={`Team ${team.teamName} Stars`}
+                    stat={team.inventory.stars}
+                  />
+                ))}
               </div>
             </div>
           </div>
