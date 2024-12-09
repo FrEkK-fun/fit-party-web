@@ -160,7 +160,7 @@ export default function Team() {
               text="Trickery and power-ups"
             />
             {data.inventory.cards.length === 0 && (
-              <div className="-my-6 sm:-my-12">
+              <div>
                 <Notification>Team {data.teamName} has no cards!</Notification>
               </div>
             )}
@@ -176,7 +176,7 @@ export default function Team() {
           <section>
             <HeroSection title="Armory" sm="true" text="Weapons and defense" />
             {!teamArmory && (
-              <div className="-my-6 sm:-my-12">
+              <div>
                 <Notification>
                   Team {data.teamName} has no items in their armory!
                 </Notification>
@@ -231,7 +231,7 @@ export default function Team() {
               sm="true"
               subtitle={`Team ${data.teamName}`}
             />
-            <div className="mb-24 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
+            <div className="mb-12 grid w-full grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-4">
               {data.players.map((player) => (
                 <PlayerQuickStatCard key={player._id} player={player} />
               ))}
