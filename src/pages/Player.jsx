@@ -159,7 +159,7 @@ export default function Player() {
             </div>
           </section>
           {/* Logging and Goal */}
-          <section className="flex flex-col gap-12">
+          <section className="mb-12 flex flex-col gap-12">
             <div className="flex w-full flex-col gap-4 py-12 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
               <div className="sm:w-1/2">
                 <FontAwesomeIcon
