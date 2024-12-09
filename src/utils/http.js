@@ -71,3 +71,26 @@ export async function patcher({ url, body, token }) {
     throw new Error(error.message || 'Failed to make request');
   }
 }
+
+export async function deleter({ url, token }) {
+  try {
+    console.log(url, token);
+    const response = await fetch(`${baseUrl}${url}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'An error occurred while deleting data');
+    }
+
+    return data;
+  } catch (error) {
+    throw new Error(error.message || 'Failed to make request');
+  }
+}

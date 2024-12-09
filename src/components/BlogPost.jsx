@@ -1,14 +1,21 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Markdown from 'markdown-to-jsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import parseTimestamp from '../utils/parseTimestamp';
 import useAuthStore from '../store/authStore';
+import { deleter } from '../utils/http';
 
 import YoutubeEmbed from './YoutubeEmbed';
 
 export default function BlogPost({ post }) {
   const user = useAuthStore((state) => state.user);
   const [timestamp, setTimestamp] = useState('');
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (post) {
@@ -17,11 +24,45 @@ export default function BlogPost({ post }) {
     }
   }, [post, timestamp]);
 
+  const deleteMutation = useMutation({
+    mutationFn: ({ postId, token }) =>
+      deleter({
+        url: `/blogs/${postId}`,
+        token: token,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['blogs']);
+      navigate('/blog');
+    },
+  });
+
+  const handleDelete = () => {
+    deleteMutation.mutate({ postId: post._id, token: user.token });
+  };
+
   return (
     <article className="flex w-full flex-col border-b border-border-primary pb-12 dark:border-border-primary-dark">
-      <h2 className="mb-6 text-3xl font-bold text-text-primary dark:text-text-primary-dark">
-        {post.title}
-      </h2>
+      <div className="mb-6 flex items-center justify-between text-3xl">
+        <h2 className="font-bold text-text-primary dark:text-text-primary-dark">
+          {post.title}
+        </h2>
+        {user.isAdmin && (
+          <div className="flex gap-4">
+            <button>
+              <FontAwesomeIcon
+                className="rounded-full text-color-system-accent-pink"
+                icon={byPrefixAndName.fad['file-pen']}
+              />
+            </button>
+            <button onClick={handleDelete}>
+              <FontAwesomeIcon
+                className="rounded-full text-text-error dark:text-text-error-dark"
+                icon={byPrefixAndName.fad['trash-xmark']}
+              />
+            </button>
+          </div>
+        )}
+      </div>
       <YoutubeEmbed embedId={post.videoLink} />
       <p className="mt-4 text-sm font-semibold text-text-primary dark:text-text-primary-dark">
         <span className="block font-normal">Published on</span>

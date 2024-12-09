@@ -53,10 +53,6 @@ const Home = () => {
     if (data) {
       setPlayer(data);
     }
-
-    if (teamsData) {
-      console.log(teamsData);
-    }
   }, [data, setPlayer]);
 
   // Generate welcome message when player data is available
