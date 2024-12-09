@@ -7,7 +7,7 @@ export default function BlogPostThumbnail({ post }) {
   const excerpt = post.body.split(' ').slice(0, 12).join(' ');
 
   return (
-    <div>
+    <div className="max-h-fit min-w-fit rounded-md p-4 hover:bg-background-color-secondary hover:dark:bg-background-color-secondary-dark">
       <h3 className="text-xl font-bold text-text-primary dark:text-text-primary-dark">
         {post.title}
       </h3>
