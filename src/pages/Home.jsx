@@ -122,7 +122,7 @@ const Home = () => {
                 title="Your Weekly Performance Achievements"
                 text="Stay motivated by tracking your personal stats! Here, you can focus solely on your progress. Celebrate your victories and identify areas for improvement."
                 linkText="View all your stats"
-                link="/"
+                link={`/insights/players/${playerId}`}
               />
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <StatBox title="Class" stat={player.properties.class} />
@@ -137,7 +137,7 @@ const Home = () => {
                 title="Team Star Inventory"
                 text="Stay informed with essential stats showcasing all teams' performances. Our stats section offers a concise overview of crucial metrics that truly matter. Track your progress and inspire your teammates to achieve greater heights!"
                 linkText="View all team stats"
-                link="teams"
+                link="/insights"
               />
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 {teamsData.map((team) => (

@@ -25,27 +25,25 @@ export default function SectionHeader({
         )}
         {h2 && <h2 className="mt-2 text-2xl font-bold sm:text-3xl">{title}</h2>}
       </div>
-      {text ||
-        linkText ||
-        (link && (
-          <div className="pt-10 sm:w-1/2">
-            {text && <p className="mb-6">{text}</p>}
-            {linkText && link && (
-              <Link
-                to={link}
-                className="text-link-primary hover:underline dark:text-link-primary-dark"
-              >
-                {linkText}
-                <span className="">
-                  <FontAwesomeIcon
-                    icon={byPrefixAndName.fas[`chevron-right`]}
-                    className="ml-2 text-sm text-link-secondary dark:text-link-secondary-dark"
-                  />
-                </span>
-              </Link>
-            )}
-          </div>
-        ))}
+      {(text || link) && (
+        <div className="pt-10 sm:w-1/2">
+          {text && <p className="mb-6">{text}</p>}
+          {linkText && link && (
+            <Link
+              to={link}
+              className="text-link-primary hover:underline dark:text-link-primary-dark"
+            >
+              {linkText}
+              <span className="">
+                <FontAwesomeIcon
+                  icon={byPrefixAndName.fas[`chevron-right`]}
+                  className="ml-2 text-sm text-link-secondary dark:text-link-secondary-dark"
+                />
+              </span>
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }
