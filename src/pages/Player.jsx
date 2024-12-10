@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import UseAuthStore from '../store/authStore';
-import UsePlayerStore from '../store/playerStore';
 import { fetcher } from '../utils/http';
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
 
@@ -16,6 +15,7 @@ import StatBox from '../components/StatBox';
 import SessionForm from '../components/SessionForm';
 import WeeklyGoal from '../components/WeeklyGoal';
 import PlayerGoalAndIcon from '../components/PlayerGoalAndIcon';
+import SessionsLog from '../components/SessionsLog';
 
 export default function Player() {
   const user = UseAuthStore((state) => state.user);
@@ -30,10 +30,6 @@ export default function Player() {
   });
 
   useEffect(() => {
-    if (data) {
-      // console.log(data);
-    }
-
     if (user && data && user.players[0] === data._id) {
       setIsSelf(true);
     }
@@ -176,6 +172,7 @@ export default function Player() {
               </div>
             </div>
             {isSelf && <SessionForm />}
+            <SessionsLog playerId={data._id} sessions={data.sessions} />
           </section>
         </div>
       )}
