@@ -74,7 +74,6 @@ export async function patcher({ url, body, token }) {
 
 export async function deleter({ url, token }) {
   try {
-    console.log(url, token);
     const response = await fetch(`${baseUrl}${url}`, {
       method: 'DELETE',
       headers: {
