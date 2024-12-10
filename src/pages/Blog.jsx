@@ -1,4 +1,7 @@
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import { fetcher } from '../utils/http';
 import useAuthStore from '../store/authStore';
@@ -33,11 +36,27 @@ export default function Blog() {
         )}
         {/* Hero title */}
         {data && (
-          <HeroSection
-            title="Fit Blog"
-            h1="true"
-            text="Keep up to date on the latest Fit Party news!"
-          />
+          <>
+            <HeroSection
+              title="Fit Blog"
+              h1="true"
+              text="Keep up to date on the latest Fit Party news!"
+            />
+            {user?.isAdmin && (
+              <div className="mb-6 flex w-full justify-end">
+                <Link
+                  to="/blog/new"
+                  className="text-sm text-link-primary hover:underline dark:text-link-primary-dark"
+                >
+                  <FontAwesomeIcon
+                    icon={byPrefixAndName.fas['plus']}
+                    className="mr-2"
+                  />
+                  Create New Post
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </section>
       {data && (

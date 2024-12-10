@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Markdown from 'markdown-to-jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -55,12 +55,12 @@ export default function BlogPost({ post }) {
           </h2>
           {user.isAdmin && (
             <div className="flex gap-4">
-              <button>
+              <Link to={`/blog/${post._id}/edit`}>
                 <FontAwesomeIcon
                   className="rounded-full text-color-system-accent-pink"
                   icon={byPrefixAndName.fad['file-pen']}
                 />
-              </button>
+              </Link>
 
               <button type="button" onClick={openModal}>
                 <FontAwesomeIcon
