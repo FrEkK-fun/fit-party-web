@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import useAuthStore from '../store/authStore';
-import { useLogout } from '../hooks/useLogout';
+import { clearLocal } from '../utils/localStorage';
 
 import MainNavLink from './MainNavLink';
 import Button from './Button';
@@ -12,11 +12,14 @@ import Button from './Button';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
-  const { logout } = useLogout();
+  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = () => {
+    clearLocal();
     logout();
+    navigate('/');
   };
 
   const handleToggleTheme = () => {
