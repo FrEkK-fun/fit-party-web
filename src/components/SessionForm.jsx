@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import UseAuthStore from '../store/authStore';
 import UsePlayerStore from '../store/playerStore';
@@ -13,6 +13,7 @@ import Notification from './Notification';
 export default function SessionForm() {
   const user = UseAuthStore((state) => state.user);
   const player = UsePlayerStore((state) => state.player);
+  const setPlayer = UsePlayerStore((state) => state.setPlayer);
   const setSession = UsePlayerStore((state) => state.addSession);
 
   const [intensity, setIntensity] = useState(null);
@@ -35,6 +36,15 @@ export default function SessionForm() {
       setHasLogged(true);
     },
   });
+
+  const { data: playerData } = useQuery({
+    queryKey: [`/players/${user.players[0]}`],
+    refetchOnWindowFocus: false,
+  });
+
+  if (!player && playerData) {
+    setPlayer(playerData);
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

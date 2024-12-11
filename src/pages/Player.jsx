@@ -7,6 +7,7 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 import UseAuthStore from '../store/authStore';
 import { fetcher } from '../utils/http';
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
+import { calcXpViewValue, calcLevel } from '../utils/sessionsXpLevelUtils';
 
 import LoadingSpinner from '../components/LoadingSpinner';
 import Notification from '../components/Notification';
@@ -87,8 +88,11 @@ export default function Player() {
               <div className="sm:w-1/2">
                 <div className="grid grid-cols-2 gap-6">
                   <StatBox title="Sessions" stat={data.sessions.length} />
-                  <StatBox title="XP" stat="N/A" />
-                  <StatBox title="Level" stat="N/A" />
+                  <StatBox title="XP" stat={calcXpViewValue(data.sessions)} />
+                  <StatBox
+                    title="Level"
+                    stat={calcLevel(calcXpViewValue(data.sessions))}
+                  />
                   <StatBox title="HP" stat="N/A" />
                 </div>
               </div>

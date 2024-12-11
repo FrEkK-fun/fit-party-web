@@ -7,6 +7,7 @@ import {
   calcXpViewValue,
   groupSessionsByDay,
   bulkSessionsPerWeek,
+  calcLevel,
 } from '../utils/sessionsXpLevelUtils';
 import useAuthStore from '../store/authStore';
 import { deleter } from '../utils/http';
@@ -92,7 +93,7 @@ export default function SessionsLog({ playerId, sessions }) {
                       icon={byPrefixAndName.fas[`signal-bars-good`]}
                       className="mr-4 text-color-system-accent-pink"
                     />
-                    {`Level `}
+                    {`Level ${calcLevel(calcXpViewValue(weekSessions))}`}
                   </p>
                   <p className="text-text-primary dark:text-text-primary-dark">
                     <FontAwesomeIcon
@@ -123,7 +124,7 @@ export default function SessionsLog({ playerId, sessions }) {
                             key={session._id}
                             className="w-full rounded-md p-2 hover:bg-background-color-secondary hover:dark:bg-background-color-secondary-dark"
                           >
-                            <div className="flex w-full items-center justify-between">
+                            <div className="group flex w-full items-center justify-between">
                               <p className="text-sm text-text-primary dark:text-text-primary-dark">
                                 {session.intensity} intensity{' '}
                                 {session.title.toLowerCase()}
@@ -131,10 +132,11 @@ export default function SessionsLog({ playerId, sessions }) {
                               {isSelf && (
                                 <button
                                   onClick={() => openDeleteModal(session)}
+                                  className=""
                                 >
                                   <FontAwesomeIcon
                                     icon={byPrefixAndName.fas[`x`]}
-                                    className="text-sm text-color-system-accent-pink-dark hover:text-color-system-accent-pink"
+                                    className="text-sm text-border-primary group-hover:text-color-system-accent-pink-dark dark:text-border-primary-dark"
                                   />
                                 </button>
                               )}

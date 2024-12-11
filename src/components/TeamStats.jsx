@@ -3,11 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import { playerWeeklySessions } from '../utils/getPlayerWeeklySessions';
+import { calcLevel } from '../utils/sessionsXpLevelUtils';
 
 import PlayerQuickStatCard from './PlayerQuickStatCard';
 
 export default function TeamStats({ team }) {
   const teamColor = team.teamName.toLowerCase();
+
+  const teamXp = team.players.reduce((acc, player) => {
+    return acc + player.weekly.xp;
+  }, 0);
 
   return (
     <div
@@ -62,12 +67,18 @@ export default function TeamStats({ team }) {
                 className={'mr-1 text-color-system-accent-pink'}
               />
             </span>{' '}
-            {team.players.reduce((acc, player) => {
-              return acc + player.weekly.xp;
-            }, 0)}{' '}
-            XP
+            {teamXp} XP
           </p>
           {/* Level */}
+          <p>
+            <span>
+              <FontAwesomeIcon
+                icon={byPrefixAndName.fas[`signal-bars-good`]}
+                className={'mr-1 text-color-system-accent-pink'}
+              />
+            </span>{' '}
+            Level {calcLevel(teamXp)}
+          </p>
           {/* Sessions */}
           <p>
             <span>
