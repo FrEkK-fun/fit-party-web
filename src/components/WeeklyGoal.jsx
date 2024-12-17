@@ -12,10 +12,10 @@ import FormInput from './FormInput';
 import Button from './Button';
 import Notification from './Notification';
 
-export default function WeeklyGoal({ player }) {
+export default function WeeklyGoal() {
   const user = UseAuthStore((state) => state.user);
   const changeGoal = UsePlayerStore((state) => state.changeGoal);
-  const playerContext = UsePlayerStore((state) => state.player);
+  const player = UsePlayerStore((state) => state.player);
   const [goalDone, setGoalDone] = useState(player.weekly.goal.done);
   const [goalDesc, setGoalDesc] = useState(player.weekly.goal.description);
   const [errMsg, setErrMsg] = useState('');
@@ -55,8 +55,9 @@ export default function WeeklyGoal({ player }) {
       }),
     onSuccess: (data) => {
       changeGoal(data.weekly.goal);
-      setGoalDesc(data.description);
-      setGoalDone(data.done);
+      setGoalDesc(data.weekly.goal.description);
+      setGoalDone(data.weekly.goal.done);
+      player.weekly.goal = data.weekly.goal;
     },
   });
 
