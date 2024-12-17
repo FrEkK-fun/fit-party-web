@@ -26,7 +26,6 @@ export default function BlogForm() {
 
   useEffect(() => {
     if (post) {
-      console.log(post);
       setTitle(post.title);
       setBody(post.body);
       setVideoLink(post.videoLink);
