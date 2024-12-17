@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import UseAuthStore from '../store/authStore';
 import UsePlayerStore from '../store/playerStore';
@@ -11,6 +11,7 @@ import FormDatePicker from './FormDatePicker';
 import Notification from './Notification';
 
 export default function SessionForm() {
+  const queryClient = useQueryClient();
   const user = UseAuthStore((state) => state.user);
   const player = UsePlayerStore((state) => state.player);
   const setPlayer = UsePlayerStore((state) => state.setPlayer);
@@ -34,6 +35,8 @@ export default function SessionForm() {
       setTitle('');
       setIntensity(null);
       setHasLogged(true);
+      queryClient.invalidateQueries([`/players/${player._id}`]);
+      queryClient.invalidateQueries(['/teams']);
     },
   });
 

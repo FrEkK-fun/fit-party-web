@@ -29,9 +29,8 @@ export default function SessionsLog({ playerId, sessions }) {
         token: token,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [`/players/${playerId}`],
-      });
+      queryClient.invalidateQueries([`/players/${playerId}`]);
+      queryClient.invalidateQueries(['/teams']);
       setSessionToDelete(null);
     },
   });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
@@ -13,6 +13,7 @@ import Button from './Button';
 import Notification from './Notification';
 
 export default function WeeklyGoal() {
+  const queryClient = useQueryClient();
   const user = UseAuthStore((state) => state.user);
   const changeGoal = UsePlayerStore((state) => state.changeGoal);
   const player = UsePlayerStore((state) => state.player);
@@ -58,6 +59,8 @@ export default function WeeklyGoal() {
       setGoalDesc(data.weekly.goal.description);
       setGoalDone(data.weekly.goal.done);
       player.weekly.goal = data.weekly.goal;
+      queryClient.invalidateQueries([`/players/${player._id}`]);
+      queryClient.invalidateQueries(['/teams']);
     },
   });
 
