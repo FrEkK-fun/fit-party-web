@@ -6,10 +6,10 @@ import useAuthStore from '../store/authStore';
 import { poster, patcher } from '../utils/http';
 import { saveLocal } from '../utils/localStorage';
 
-import FormInput from './FormInput';
-import FormSelect from './FormSelect';
-import Button from './Button';
-import Notification from './Notification';
+import FormInput from '../components/FormInput';
+import FormSelect from '../components//FormSelect';
+import Button from '../components//Button';
+import Notification from '../components//Notification';
 
 const CreatePlayerForm = () => {
   const [name, setName] = useState('');
@@ -21,6 +21,13 @@ const CreatePlayerForm = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Team MongoDB IDs - hardcoded for now
+  const teamMongoIds = {
+    Blue: '674da219bd5c35fb1f9168d4',
+    Red: '674da219bd5c35fb1f9168d4',
+    Yellow: '674da506bd5c35fb1f9168d9',
+  };
+
   // Create player mutation
   const createPlayerMutation = useMutation({
     mutationFn: (newPlayer) =>
@@ -30,11 +37,33 @@ const CreatePlayerForm = () => {
         token: user.token,
       }),
     onSuccess: (data) => {
-      // Update user document mutation
+      // Update team document
+      updateTeamMutation.mutate({
+        teamId: teamMongoIds[team],
+        playerId: data._id,
+        token: user.token,
+      });
+
+      // Update user document
       updateUserMutation.mutate({
         playerId: data._id,
         token: user.token,
       });
+    },
+  });
+
+  // Update team mutation
+  const updateTeamMutation = useMutation({
+    mutationFn: (updateData) =>
+      patcher({
+        url: `/teams/${updateData.teamId}`, // Changed URL to match team route
+        body: {
+          $push: { players: updateData.playerId }, // Add player to team's players array
+        },
+        token: updateData.token,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/teams']); // Invalidate teams cache
     },
   });
 
@@ -77,11 +106,12 @@ const CreatePlayerForm = () => {
 
     const newPlayer = {
       name,
-      userId: '65df1acca34a41a5739908e2',
+      userId: '65df1acca34a41a5739908e2', // Hardcoded "game id" for Unity
       icon: '',
       team: {
         teamName: team,
         isTeamLeader: false,
+        teamIdMongo: teamMongoIds[team].toString(),
       },
       properties: {
         class: playerClass,

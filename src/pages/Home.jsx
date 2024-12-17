@@ -1,27 +1,32 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import useAuthStore from '../store/authStore';
 import { fetcher } from '../utils/http';
-import { loadLocal } from '../utils/localStorage';
 import { randomWelcome } from '../utils/welcomeMessages';
 
 import LoadingSpinner from '../components/LoadingSpinner';
 import HeroSection from '../components/HeroSection';
 import SectionHeader from '../components/SectionHeader';
 import Notification from '../components/Notification';
-import CreatePlayerForm from '../components/CreatePlayerForm';
 import SessionForm from '../components/SessionForm';
 import WeeklyGoal from '../components/WeeklyGoal';
 import StatBox from '../components/StatBox';
 import BlogPost from '../components/BlogPost';
 
 const Home = () => {
+  const Navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const playerId = user?.players?.[0];
+
+  useEffect(() => {
+    if (!playerId) {
+      Navigate('/create-player');
+    }
+  }, [playerId, Navigate]);
 
   const [welcomeTitle, setWelcomeTitle] = useState('');
   const [welcomeText, setWelcomeText] = useState('');
@@ -32,9 +37,9 @@ const Home = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [`/players/${user.players[0]}`, user.token],
+    queryKey: [`/players/${playerId}`, user.token],
     queryFn: fetcher,
-    enabled: !!user.players[0], // Only fetch if playerId is available
+    enabled: !!user, // Only fetch if playerId is available
   });
 
   // Fetch teams data
@@ -57,11 +62,6 @@ const Home = () => {
       setWelcomeText(welcome.welcomeText);
     }
   }, [player]);
-
-  // If user has no players, show create player form
-  if (!user.players || user.players.length === 0) {
-    return <CreatePlayerForm />;
-  }
 
   return (
     <>

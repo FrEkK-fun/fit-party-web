@@ -26,7 +26,7 @@ const Signup = () => {
     onSuccess: (data) => {
       loginUser(data);
       saveLocal('user', data);
-      navigate('/');
+      navigate('/create-player');
     },
   });
 

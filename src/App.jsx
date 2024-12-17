@@ -19,9 +19,11 @@ import Rules from './pages/Rules';
 import Blog from './pages/Blog';
 import BlogPostDetails from './pages/BlogPost';
 import BlogForm from './pages/BlogForm';
+import CreatePlayerForm from './pages/CreatePlayerForm';
 
 function App() {
   const user = useAuthStore((state) => state.user);
+  const userPlayers = user?.players || null;
 
   const router = createBrowserRouter(
     [
@@ -31,7 +33,14 @@ function App() {
         children: [
           { path: 'signup', element: <Signup /> },
           { path: 'login', element: <Login /> },
-          { index: true, element: user ? <Home /> : <Navigate to="/login" /> },
+          {
+            path: 'create-player',
+            element: !userPlayers ? <CreatePlayerForm /> : <Navigate to="/" />,
+          },
+          {
+            index: true,
+            element: user ? <Home /> : <Navigate to="/login" />,
+          },
           {
             path: 'insights',
             element: user ? <PlayersInsights /> : <Navigate to="/login" />,
