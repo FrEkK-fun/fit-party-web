@@ -174,7 +174,7 @@ export default function Player() {
                 </h3>
               </div>
               <div className="sm:w-1/2">
-                {isSelf && <WeeklyGoal player={data} />}
+                {isSelf && <WeeklyGoal />}
                 {!isSelf && <PlayerGoalAndIcon player={data} />}
               </div>
             </div>

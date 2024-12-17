@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+
 import UseAuthStore from '../store/authStore';
-import UsePlayerStore from '../store/playerStore';
 import { poster } from '../utils/http';
 
 import Button from './Button';
@@ -13,15 +13,17 @@ import Notification from './Notification';
 export default function SessionForm() {
   const queryClient = useQueryClient();
   const user = UseAuthStore((state) => state.user);
-  const player = UsePlayerStore((state) => state.player);
-  const setPlayer = UsePlayerStore((state) => state.setPlayer);
-  const setSession = UsePlayerStore((state) => state.addSession);
 
   const [intensity, setIntensity] = useState(null);
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [errMsg, setErrMsg] = useState('');
   const [hasLogged, setHasLogged] = useState(false);
+
+  const { data: player } = useQuery({
+    queryKey: [`/players/${user.players[0]}`],
+    refetchOnWindowFocus: false,
+  });
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: (data) =>
@@ -30,8 +32,7 @@ export default function SessionForm() {
         body: data.session,
         token: data.token,
       }),
-    onSuccess: (data) => {
-      setSession(data.session, data.weeklyXp, data.weeklyLevel);
+    onSuccess: () => {
       setTitle('');
       setIntensity(null);
       setHasLogged(true);

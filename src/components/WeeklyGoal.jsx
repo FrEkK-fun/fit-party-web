@@ -1,25 +1,46 @@
-import { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
-import UseAuthStore from '../store/authStore';
-import UsePlayerStore from '../store/playerStore';
-import { patcher } from '../utils/http';
+import useAuthStore from '../store/authStore';
+import { patcher, fetcher } from '../utils/http';
 
+import LoadingSpinner from './LoadingSpinner';
 import FormInput from './FormInput';
 import Button from './Button';
 import Notification from './Notification';
 
 export default function WeeklyGoal() {
   const queryClient = useQueryClient();
-  const user = UseAuthStore((state) => state.user);
-  const changeGoal = UsePlayerStore((state) => state.changeGoal);
-  const player = UsePlayerStore((state) => state.player);
-  const [goalDone, setGoalDone] = useState(player.weekly.goal.done);
-  const [goalDesc, setGoalDesc] = useState(player.weekly.goal.description);
+  const user = useAuthStore((state) => state.user);
   const [errMsg, setErrMsg] = useState('');
+
+  const {
+    data: player,
+    isLoading,
+    isError: isPlayerError,
+    error: playerError,
+  } = useQuery({
+    queryKey: [`/players/${user.players[0]}`],
+    queryFn: fetcher,
+    refetchOnWindowFocus: false,
+    retry: false,
+    enabled: !!user?.players[0],
+  });
+
+  const [goalDone, setGoalDone] = useState(player?.weekly?.goal?.done || false);
+  const [goalDesc, setGoalDesc] = useState(
+    player?.weekly?.goal?.description || ''
+  );
+
+  useEffect(() => {
+    if (player?.weekly?.goal) {
+      setGoalDone(player.weekly.goal.done);
+      setGoalDesc(player.weekly.goal.description);
+    }
+  }, [player]);
 
   async function handleCheck() {
     if (!user) {
@@ -55,14 +76,28 @@ export default function WeeklyGoal() {
         token: user.token,
       }),
     onSuccess: (data) => {
-      changeGoal(data.weekly.goal);
       setGoalDesc(data.weekly.goal.description);
       setGoalDone(data.weekly.goal.done);
-      player.weekly.goal = data.weekly.goal;
       queryClient.invalidateQueries([`/players/${player._id}`]);
       queryClient.invalidateQueries(['/teams']);
     },
   });
+
+  if (isLoading) {
+    return (
+      <div className="flex content-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (isPlayerError) {
+    return (
+      <Notification type="error">
+        {`Could not fetch goal data ${playerError.message && ':' + playerError.message}`}
+      </Notification>
+    );
+  }
 
   return (
     <div className="w-full rounded-sm border border-border-primary bg-background-color-secondary p-4 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
