@@ -75,7 +75,7 @@ export default function SessionsLog({ playerId, sessions }) {
           return (
             <div
               key={weekNr}
-              className="mb-12 flex w-full flex-col gap-y-12 sm:flex-row"
+              className={`${weekNr % 2 === 0 ? 'mb-12 flex w-full flex-col gap-y-12 px-4 sm:flex-row' : 'mb-12 flex w-full flex-col gap-y-12 bg-black/5 px-4 py-12 sm:flex-row dark:bg-black/10'}`}
             >
               <div className="flex w-full flex-col gap-4 sm:w-1/2">
                 <h3 className="text-2xl font-bold text-text-primary dark:text-text-primary-dark">{`Week ${weekNr}`}</h3>
