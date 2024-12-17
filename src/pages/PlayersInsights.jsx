@@ -45,9 +45,17 @@ export default function PlayersInsights() {
       {teams && (
         <>
           <section className="mt-12">
-            <div className="flex flex-col gap-24">
-              {teams.map((team) => (
+            <div className="flex flex-col gap-12">
+              {/* {teams.map((team) => (
                 <TeamStats key={team._id} team={team} />
+              ))} */}
+              {teams.map((team, index) => (
+                <div
+                  key={team._id}
+                  className={`${index % 2 === 0 ? null : 'bg-black/10 py-12'}`}
+                >
+                  <TeamStats team={team} />
+                </div>
               ))}
             </div>
           </section>
