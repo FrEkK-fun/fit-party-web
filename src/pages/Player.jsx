@@ -151,7 +151,10 @@ export default function Player() {
                     stat={playerWeeklySessions(data).length}
                   />
                   <StatBox title="XP" stat={data.weekly.xp} />
-                  <StatBox title="Level" stat={data.weekly.level} />
+                  <StatBox
+                    title="Weekly Level"
+                    stat={`${data.weekly.level}${data.weekly.goal.done ? ' +1' : ''}`}
+                  />
                   <StatBox title="HP" stat="N/A" />
                   <StatBox title="Class" stat={data.properties.class} />
                 </div>

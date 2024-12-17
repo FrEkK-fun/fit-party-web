@@ -127,7 +127,10 @@ const Home = () => {
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
                 <StatBox title="Class" stat={player.properties.class} />
                 <StatBox title="Weekly XP" stat={player.weekly.xp} />
-                <StatBox title="Weekly Level" stat={player.weekly.level} />
+                <StatBox
+                  title="Weekly Level"
+                  stat={`${player.weekly.level}${player.weekly.goal.done ? ' +1' : ''}`}
+                />
               </div>
             </div>
             {/* Team, star inventory */}
