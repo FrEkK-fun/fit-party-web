@@ -7,7 +7,6 @@ import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
 import parseTimestamp from '../utils/parseTimestamp';
 import useAuthStore from '../store/authStore';
-import useModalStore from '../store/modalStore';
 import { deleter } from '../utils/http';
 
 import YoutubeEmbed from './YoutubeEmbed';
@@ -15,12 +14,13 @@ import Modal from './Modal';
 
 export default function BlogPost({ post }) {
   const user = useAuthStore((state) => state.user);
-  const isModalOpen = useModalStore((state) => state.isModalOpen);
-  const openModal = useModalStore((state) => state.openModal);
-  const closeModal = useModalStore((state) => state.closeModal);
   const [timestamp, setTimestamp] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
 
   useEffect(() => {
     if (post) {
@@ -156,7 +156,7 @@ export default function BlogPost({ post }) {
           </Markdown>
         </div>
       </article>
-      {isModalOpen && (
+      {isOpen && (
         <Modal onClose={closeModal}>
           <h3 className="text-xl font-bold">Delete Post</h3>
           <p>Are you sure you want to delete this post?</p>
