@@ -15,11 +15,12 @@ import Signup from './pages/Signup';
 import PlayersInsights from './pages/PlayersInsights';
 import Team from './pages/Team';
 import Player from './pages/Player';
-import Rules from './pages/Rules';
 import Blog from './pages/Blog';
 import BlogPostDetails from './pages/BlogPost';
 import BlogForm from './pages/BlogForm';
 import CreatePlayerForm from './pages/CreatePlayerForm';
+import DocsLayout from './pages/DocsLayout';
+import DocTopic from './components/DocTopic';
 
 function App() {
   const user = useAuthStore((state) => state.user);
@@ -53,10 +54,6 @@ function App() {
             path: 'insights/players/:playerId',
             element: user ? <Player /> : <Navigate to="/login" />,
           },
-          {
-            path: 'rules',
-            element: user ? <Rules /> : <Navigate to="/login" />,
-          },
           { path: 'blog', element: user ? <Blog /> : <Navigate to="/login" /> },
           {
             path: 'blog/:postId',
@@ -76,6 +73,14 @@ function App() {
               });
               return post;
             },
+          },
+          {
+            path: 'docs',
+            element: user ? <DocsLayout /> : <Navigate to="/login" />,
+            children: [
+              { index: true, element: <Navigate to="/docs/introduction" /> },
+              { path: ':topic', element: <DocTopic /> },
+            ],
           },
         ],
       },
