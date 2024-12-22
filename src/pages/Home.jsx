@@ -1,59 +1,179 @@
-import { useAuthContext } from "../hooks/useAuthContext";
-import CreatePlayerForm from "../components/CreatePlayerForm";
+import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
 
-import { useEffect } from "react";
-import { usePlayerContext } from "../hooks/usePlayerContext";
-import backendURL from "../config";
+import useAuthStore from '../store/authStore';
+import { fetcher } from '../utils/http';
+import { randomWelcome } from '../utils/welcomeMessages';
 
-// Components
-import SessionForm from "../components/SessionForm";
-import WeeklyGoal from "../components/WeeklyGoal";
+import LoadingSpinner from '../components/LoadingSpinner';
+import HeroSection from '../components/HeroSection';
+import SectionHeader from '../components/SectionHeader';
+import Notification from '../components/Notification';
+import SessionForm from '../components/SessionForm';
+import WeeklyGoal from '../components/WeeklyGoal';
+import StatBox from '../components/StatBox';
+import BlogPost from '../components/BlogPost';
 
 const Home = () => {
-	const { user } = useAuthContext();
+  const Navigate = useNavigate();
+  const user = useAuthStore((state) => state.user);
+  const playerId = user?.players?.[0];
 
-	const { player, dispatch } = usePlayerContext();
-	const playerId = user?.players?.[0];
+  useEffect(() => {
+    if (!playerId) {
+      Navigate('/create-player');
+    }
+  }, [playerId, Navigate]);
 
-	useEffect(() => {
-		const fetchPlayer = async () => {
-			const res = await fetch(`${backendURL}/api/players/${playerId}`, {
-				headers: {
-					Authorization: `Bearer ${user.token}`,
-				},
-			});
-			const json = await res.json();
+  const [welcomeTitle, setWelcomeTitle] = useState('');
+  const [welcomeText, setWelcomeText] = useState('');
 
-			if (res.ok) {
-				dispatch({ type: "SET_PLAYER", payload: json });
-			}
-		};
+  // Fetch player data
+  const {
+    data: player,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: [`/players/${playerId}`, user.token],
+    queryFn: fetcher,
+    enabled: !!user, // Only fetch if playerId is available
+  });
 
-		if (user) {
-			fetchPlayer();
-		}
-	}, [dispatch, playerId, user]);
+  // Fetch teams data
+  const { data: teamsData } = useQuery({
+    queryKey: ['/teams'],
+    queryFn: fetcher,
+  });
 
-	// If the user has no players, show the create player form
-	if (!user.players || user.players.length === 0) {
-		return <CreatePlayerForm />;
-	}
+  // Fetch Blog
+  const { data: blogData } = useQuery({
+    queryKey: ['/blogs'],
+    queryFn: fetcher,
+  });
 
-	// If the user is logged in and has players, show the home content
-	return (
-		<main>
-			<h2>Home</h2>
-			<div>
-				{player && <SessionForm />}
-				{player && player.weekly.goal.description === "" && (
-					<div>
-						<h3>Weekly goal</h3>
-						<WeeklyGoal player={player} />
-					</div>
-				)}
-			</div>
-		</main>
-	);
+  // Generate welcome message when player data is available
+  useEffect(() => {
+    if (player) {
+      const welcome = randomWelcome(player.name);
+      setWelcomeTitle(welcome.welcomeTitle);
+      setWelcomeText(welcome.welcomeText);
+    }
+  }, [player]);
+
+  return (
+    <>
+      <section>
+        {/* Info states */}
+        {isLoading && (
+          <div className="mt-24 flex h-fit justify-center">
+            <LoadingSpinner />
+          </div>
+        )}
+        {isError && (
+          <div className="mt-6 h-fit w-full">
+            <Notification type="error">Could not fetch player</Notification>
+          </div>
+        )}
+        {/* Logging & Goal */}
+        {player && welcomeTitle && welcomeText && (
+          <HeroSection title={welcomeTitle} text={welcomeText} h1="true" />
+        )}
+        {player && (
+          <div className="flex flex-col gap-12">
+            <SessionForm />
+            <div className="flex w-full flex-col gap-4 text-text-primary sm:flex-row sm:items-center dark:text-text-primary-dark">
+              <div className="sm:w-1/2">
+                <FontAwesomeIcon
+                  icon={byPrefixAndName.fas[`bullseye`]}
+                  className="text-3xl text-color-system-accent-pink"
+                />
+                <h3 className="mt-2 text-2xl font-bold sm:text-3xl">
+                  Weekly Goal
+                </h3>
+              </div>
+              <div className="sm:w-1/2">
+                <WeeklyGoal />
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+      {player && teamsData && (
+        <section className="my-24">
+          {/* Quick stats */}
+          <HeroSection
+            title="Performance Overview"
+            text="Essential insights summarized"
+          />
+          {/* Player, weekly stats */}
+          <div className="mt-12 flex flex-col gap-24">
+            <div>
+              <SectionHeader
+                icon="chess-pawn"
+                title="Your Weekly Performance Achievements"
+                text="Stay motivated by tracking your personal stats! Here, you can focus solely on your progress. Celebrate your victories and identify areas for improvement."
+                linkText="View all your stats"
+                link={`/insights/players/${playerId}`}
+              />
+              <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+                <StatBox title="Class" stat={player.properties.class} />
+                <StatBox title="Weekly XP" stat={player.weekly.xp} />
+                <StatBox
+                  title="Weekly Level"
+                  stat={`${player.weekly.level}${player.weekly.goal.done ? ' +1' : ''}`}
+                />
+              </div>
+            </div>
+            {/* Team, star inventory */}
+            <div>
+              <SectionHeader
+                icon="star"
+                title="Team Star Inventory"
+                text="Stay informed with essential stats showcasing all teams' performances. Our stats section offers a concise overview of crucial metrics that truly matter. Track your progress and inspire your teammates to achieve greater heights!"
+                linkText="View all team stats"
+                link="/insights"
+              />
+              <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+                {teamsData.map((team) => (
+                  <StatBox
+                    key={team._id}
+                    team={team.teamName.toLowerCase()}
+                    title={`Team ${team.teamName} Stars`}
+                    stat={team.inventory.stars}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+      {/* Blog */}
+      {player && blogData && (
+        <section className="mb-12 flex flex-col items-center gap-6">
+          <HeroSection
+            title="Latest Game Updates"
+            text="Stay updated with the latest post from the blog"
+          />
+          <BlogPost post={blogData[0]} />
+          <Link
+            to={`/blog`}
+            className="text-sm text-link-primary hover:underline dark:text-link-primary-dark"
+          >
+            View All Blog Posts
+            <span>
+              <FontAwesomeIcon
+                icon={byPrefixAndName.fas[`chevron-right`]}
+                className="ml-2 text-xs text-link-secondary dark:text-link-secondary-dark"
+              />
+            </span>
+          </Link>
+        </section>
+      )}
+    </>
+  );
 };
 
 export default Home;

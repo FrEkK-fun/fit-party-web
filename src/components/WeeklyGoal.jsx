@@ -1,157 +1,167 @@
-import { useState } from "react";
-import { useAuthContext } from "../hooks/useAuthContext";
+import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { byPrefixAndName } from '@awesome.me/kit-43505c22f8/icons';
-import backendURL from "../config";
-import getWeekday from "../utils/getWeekday";
 
-const WeeklyGoal = ({ player }) => {
-	const { user } = useAuthContext();
-	const userHasAuthorization = user.players.includes(player._id);
-	const [goal, setGoal] = useState("");
-	const [currentGoal, setCurrentGoal] = useState(
-		player.weekly.goal.description
-	);
-	const [goalDone, setGoalDone] = useState(player.weekly.goal.done);
+import useAuthStore from '../store/authStore';
+import { patcher, fetcher } from '../utils/http';
 
-	const handleSubmit = async (e) => {
-		e.preventDefault();
+import LoadingSpinner from './LoadingSpinner';
+import FormInput from './FormInput';
+import Button from './Button';
+import Notification from './Notification';
 
-		const response = await fetch(
-			`${backendURL}/api/players/${player._id}/goal`,
-			{
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ goalObj: { description: goal, done: false } }),
-			}
-		);
+export default function WeeklyGoal() {
+  const queryClient = useQueryClient();
+  const user = useAuthStore((state) => state.user);
+  const [errMsg, setErrMsg] = useState('');
 
-		if (response.ok) {
-			const updatedPlayer = await response.json();
-			setGoal("");
-			setCurrentGoal(updatedPlayer.weekly.goal.description);
-			setGoalDone(updatedPlayer.weekly.goal.done);
-		} else {
-			const errorData = await response.json();
-			console.error("Failed to save goal:", errorData.error);
-		}
-	};
+  const {
+    data: player,
+    isLoading,
+    isError: isPlayerError,
+    error: playerError,
+  } = useQuery({
+    queryKey: [`/players/${user.players[0]}`],
+    queryFn: fetcher,
+    refetchOnWindowFocus: false,
+    retry: false,
+    enabled: !!user?.players[0],
+  });
 
-	const handleGoalCompletion = async () => {
-		const response = await fetch(
-			`${backendURL}/api/players/${player._id}/goal`,
-			{
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					goalObj: { description: currentGoal, done: !goalDone },
-				}),
-			}
-		);
+  const [goalDone, setGoalDone] = useState(player?.weekly?.goal?.done || false);
+  const [goalDesc, setGoalDesc] = useState(
+    player?.weekly?.goal?.description || ''
+  );
 
-		if (response.ok) {
-			const updatedPlayer = await response.json();
-			setGoalDone(updatedPlayer.weekly.goal.done);
-		} else {
-			const errorData = await response.json();
-			console.error("Failed to update goal completion:", errorData.error);
-		}
-	};
+  useEffect(() => {
+    if (player?.weekly?.goal) {
+      setGoalDone(player.weekly.goal.done);
+      setGoalDesc(player.weekly.goal.description);
+    }
+  }, [player]);
 
-	const today = getWeekday(Date.now());
+  async function handleCheck() {
+    if (!user) {
+      setErrMsg('You must be logged in to check off a goal');
+      return;
+    }
 
-	if (userHasAuthorization && currentGoal) {
-		return (
-			<div className="goalWrapper">
-				<p>
-					Your goal has been set - it cannot be changed.{" "}
-					<span>Mark goal as done once completed.</span>
-				</p>
-				<input
-					type="checkbox"
-					id="goalDone"
-					name="goalDone"
-					checked={goalDone}
-					onChange={handleGoalCompletion}
-					className="goalCheckbox"
-				/>
-				<label htmlFor="goalDone">{currentGoal}</label>
-			</div>
-		);
-	}
+    await mutate({
+      done: !goalDone,
+      description: goalDesc,
+    });
+  }
 
-	if (
-		userHasAuthorization &&
-		!currentGoal &&
-		(today === "monday" || today === "tuesday")
-	) {
-		return (
-			<form className="goalInputForm" onSubmit={handleSubmit}>
-				<label>
-					<input
-						type="text"
-						value={goal}
-						placeholder="Enter your weekly goal"
-						onChange={(e) => setGoal(e.target.value)}
-					/>
-				</label>
-				<button type="submit">Submit Goal</button>
-			</form>
-		);
-	}
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-	if (
-		userHasAuthorization &&
-		!currentGoal &&
-		(today !== "monday" || today !== "tuesday")
-	) {
-		return (
-			<p>
-				<span>
-					<FontAwesomeIcon className="goalNotSet" icon={byPrefixAndName.fas['circle-exclamation']} />
-				</span>{" "}
-				No goal set for this week.
-			</p>
-		);
-	}
+    if (!user) {
+      setErrMsg('You must be logged in to set a goal');
+      return;
+    }
 
-	if (!userHasAuthorization && !currentGoal) {
-		return (
-			<p>
-				<span>
-					<FontAwesomeIcon className="goalNotSet" icon={byPrefixAndName.fas['circle-exclamation']} />
-				</span>{" "}
-				No goal set for this week.
-			</p>
-		);
-	}
+    await mutate({
+      done: false,
+      description: e.target.goal.value,
+    });
+  }
 
-	if (!userHasAuthorization && currentGoal && !goalDone) {
-		return (
-			<p>
-				<span>
-					<FontAwesomeIcon className="goalSet" icon={byPrefixAndName.fas['person-running']} />
-				</span>{" "}
-				{currentGoal}
-			</p>
-		);
-	}
+  const { mutate, isPending, isError, error } = useMutation({
+    mutationFn: (data) =>
+      patcher({
+        url: `/players/${player._id}/goal`,
+        body: { goalObj: data },
+        token: user.token,
+      }),
+    onSuccess: (data) => {
+      setGoalDesc(data.weekly.goal.description);
+      setGoalDone(data.weekly.goal.done);
+      queryClient.invalidateQueries([`/players/${player._id}`]);
+      queryClient.invalidateQueries(['/teams']);
+    },
+  });
 
-	if (!userHasAuthorization && currentGoal && goalDone) {
-		return (
-			<p>
-				<span>
-					<FontAwesomeIcon className="goalDone" icon={byPrefixAndName.fas['circle-check']} />
-					
-				</span>{" "}
-				{currentGoal} <span className="italic">(Completed!)</span>
-			</p>
-		);
-	}
-};
+  if (isLoading) {
+    return (
+      <div className="flex content-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
-export default WeeklyGoal;
+  if (isPlayerError) {
+    return (
+      <Notification type="error">
+        {`Could not fetch goal data ${playerError.message && ':' + playerError.message}`}
+      </Notification>
+    );
+  }
+
+  return (
+    <div className="w-full rounded-sm border border-border-primary bg-background-color-secondary p-4 dark:border-border-primary-dark dark:bg-background-color-secondary-dark">
+      {/* Goal not set */}
+      {!goalDesc && (
+        <div className="flex flex-col gap-4">
+          <p>Oh no, you have not yet set a goal for this week!</p>
+          <p>
+            Reaching your goal at the end of the week grows your weekly level by
+            +1.
+          </p>
+          <form className="mt-2 flex flex-col gap-4" onSubmit={handleSubmit}>
+            <FormInput
+              label="Set Weekly Goal:"
+              name="goal"
+              placeholder="Type your new goal.."
+              type="text"
+            />
+            <Button disabled={isPending} wFull="true" type="submit">
+              Set Goal
+            </Button>
+          </form>
+        </div>
+      )}
+      {/* Goal set */}
+      {goalDesc && (
+        <div className="flex flex-row items-center gap-4">
+          <label
+            htmlFor="goal"
+            className="flex flex-grow flex-row items-center gap-4 hover:cursor-pointer"
+          >
+            <FontAwesomeIcon
+              icon={
+                byPrefixAndName.fas[goalDone ? `party-horn` : `spinner-scale`]
+              }
+              className="text-3xl text-color-system-accent-pink"
+            />
+            <div className="flex flex-grow flex-col">
+              <h4 className="font-semibold">
+                {goalDone ? 'Goal reached!' : 'Still working on it'}
+              </h4>
+              <p className="italic">{goalDesc}</p>
+            </div>
+          </label>
+          <input
+            type="checkbox"
+            name="goal"
+            id="goal"
+            checked={goalDone}
+            onChange={handleCheck}
+            className="h-5 w-5 rounded-md hover:cursor-pointer dark:accent-color-system-success-green"
+          />
+        </div>
+      )}
+      {errMsg && (
+        <div className="mt-4">
+          <Notification type="error">{errMsg}</Notification>
+        </div>
+      )}
+      {isError && (
+        <div className="mt-4">
+          <Notification type="error">{error.message}</Notification>
+        </div>
+      )}
+    </div>
+  );
+}
